@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "helvetica",
+        "createdAt": "2026-10-17T16:48:12.903Z",
+        "reason": "Fallback only: intent/spec.md 4.3 (accepted by the owner in PR #3) sets Host Grotesk with a Helvetica Neue/Arial fallback; Host Grotesk is loaded in phase 2"
+      }
+    ]
+  }
+}
