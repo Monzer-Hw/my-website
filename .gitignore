@@ -1,3 +1,33 @@
 # Claude Code: local worktrees and personal settings
 .claude/worktrees/
 .claude/settings.local.json
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# testing
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/.lighthouseci/
+
+# env files (only the example is committed)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# debug
+npm-debug.log*
+
+# misc
+.DS_Store
+*.pem
