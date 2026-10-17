@@ -131,6 +131,58 @@ section.
 - **Browsers**: current Chrome, Edge, Firefox and Safari, desktop and
   mobile. Works from 360px wide upward without sideways scrolling.
 
+### 3.10 Legal requirements (Germany)
+Based on public guidance (sources at the end of this section). No
+lawyer is involved; the legal texts come from a reputable generator.
+
+**Impressum (§5 DDG): required.** The duty applies to sites run
+"geschäftsmäßig", meaning regularly and with an economic interest. A
+portfolio that promotes Monzer to employers and clients counts as
+self-promotion, so it is treated as required. It contains:
+- Full name
+- An address where Monzer can actually be served legal post. A P.O.
+  box is not allowed; a c/o address only if post really reaches Monzer
+  there and they can be met there. In practice: the home address.
+- Email address, and any further contact details the generator asks for
+- No VAT ID or register entry, since no business is registered
+
+**Datenschutzerklärung (GDPR Art. 13): required**, because the contact
+form and the hosting process personal data. It covers:
+- Who is responsible (Monzer, with contact details)
+- Hosting: Vercel processes server logs including IP addresses. Vercel
+  is certified under the EU-US Data Privacy Framework and its Data
+  Processing Addendum is part of its terms; name the transfer basis.
+- Contact form: what is collected, why, the legal basis (answering the
+  visitor's request), the email provider that delivers it, and how
+  long messages are kept
+- Fonts: served from the site itself, so no data goes to Google
+- Videos: depends on the hosting decision (8.1); a third-party host
+  must be named
+- Visitors' rights (access, correction, deletion, objection) and the
+  right to complain to a data protection authority
+
+**Cookie banner: not needed.** Consent under §25 TDDDG is only needed
+for storage or access on the visitor's device that isn't strictly
+necessary. The site sets no cookies and loads no third-party content
+before a click, so no banner is shown. Adding analytics or embeds
+later would change this.
+
+**How the texts are made:** with the free generators by attorney
+Dr. Thomas Schwenke (datenschutz-generator.de), which are free for
+private individuals and require a link back to the generator. Check
+the current terms before use. Regenerate the texts whenever a service
+is added or changed.
+
+Sources:
+[e-recht24: Impressumspflicht](https://e-recht24.de/artikel/datenschutz/209.html),
+[IHK Chemnitz: Impressumspflicht](https://www.ihk.de/chemnitz/recht-und-steuern/rechtsinformationen/internetrecht/pflichtangaben-im-internet-die-impressumspflicht-4401580),
+[e-recht24: ladungsfähige Anschrift](https://e-recht24.de/impressum/13082-ladungsfaehige-anschrift.html),
+[e-recht24: c/o-Adresse](https://www.e-recht24.de/impressum/8369-impressum-c-o-adresse.html),
+[e-recht24: Kontaktformular](https://www.e-recht24.de/dsg/12687-kontaktformular.html),
+[e-recht24: TDDDG](https://www.e-recht24.de/datenschutz/12834-tdddg.html),
+[Vercel: compliance](https://vercel.com/docs/security/compliance),
+[datenschutz-generator.de: Impressum](https://datenschutz-generator.de/impressum).
+
 ## 4. Design (UI/UX)
 The [design reference](design-reference.html) shows everything below.
 Its blue "Show changes" panel and the black notice bar are preview
@@ -233,32 +285,41 @@ end with a period. Buttons say exactly what happens.
 - **Hosting**: Vercel, with server functions in the Frankfurt region
   (`fra1`) so form data is processed in the EU. Custom domain once
   bought.
-- **Videos**: see open question 7.1.
-- **Link preview image**: generated at build time with `next/og`.
-- **Checks in CI**: type check, lint, build (including the placeholder
-  check), and an accessibility check of the built pages.
+- **Videos**: see open question 8.1.
 
-## 6. Concerns (flagged for the product owner)
-1. **Legal pages need a proper review.** The Impressum (§5 DDG) and
-   Datenschutz must name everything that processes visitor data:
-   Vercel (hosting, server logs with IP addresses), the email provider
-   (contact form) and the video host, if any. This spec is not legal
-   advice; use a reputable generator or a lawyer before launch.
-2. **The consent checkbox** is not strictly required for answering a
-   message (the legal basis is the visitor's request), but it makes
-   the privacy notice explicit. Kept as designed; remove only after
-   legal review.
-3. **Your email address is shown on the page.** It helps people who
-   prefer email but attracts spam. Alternative: show it only in the
-   form's error state.
-4. **The looping ring costs performance and attention.** The pause,
-   reduced-motion and frame-rate rules in 4.7 keep it in check.
-5. **Placeholder content must never go live.** Enforced by the build
-   check in 3.7.
+Implementation details (exact libraries, CI checks, rate-limit setup,
+file structure, order of work) belong in `plan.md` in Stage 3.
 
-## 7. Open questions
+## 6. Concerns
+Each concern has an owner who decides or acts on it. In this project
+Monzer is the product owner and the owner of every policy; Claude
+carries out the checks during the build.
 
-### 7.1 Carried forward from the intent
+| # | Concern | Owner | Decision or action |
+|---|---|---|---|
+| 1 | **The Impressum makes the home address public** (3.10). This conflicts with keeping the address off the CV. | Monzer | Decide before launch: home address, or a c/o address where post really reaches Monzer. |
+| 2 | **Legal texts must stay accurate.** They must name every service that processes visitor data. | Monzer | Generate both texts before launch; regenerate when a service changes. Claude checks the list of services against the build. |
+| 3 | **The consent checkbox** isn't strictly required (the legal basis is the visitor's request), but it makes the privacy notice explicit. | Monzer | Keep as designed, or remove. |
+| 4 | **The email address is shown on the page.** It helps people who prefer email but attracts spam. | Monzer | Keep, or show it only in the form's error state. |
+| 5 | **The looping ring costs performance and attention.** | Monzer (design), Claude (checks) | The rules in 4.7 apply; Claude measures frame rate and Lighthouse during the build. |
+| 6 | **Placeholder content must never go live.** | Monzer | Enforced by the build check in 3.7. |
+
+## 7. Skills and policies
+The playbook expects the spec to be guided by the organisation's
+brand, security, compliance and UX policies, written as Claude
+skills. None exist for this project, so the rules are written into
+this spec instead:
+- Brand and UX: section 4
+- Accessibility, performance and privacy: section 3.9
+- Compliance: section 3.10
+
+Candidates to turn into skills during the build, if they prove useful
+across sessions: a **design-system skill** from section 4, and a
+**privacy and legal checklist skill** from 3.9 and 3.10.
+
+## 8. Open questions
+
+### 8.1 Carried forward from the intent
 - **Where are the demo videos hosted?** Not decided.
   *Recommendation:* self-host compressed MP4 files on the site (or
   Vercel Blob), so no third party sees visitors. Alternative:
@@ -267,7 +328,7 @@ end with a period. Buttons say exactly what happens.
 - **What visual style should the site have?** **Answered** by section
   4 and the design reference.
 
-### 7.2 New
+### 8.2 New
 - **Email address and domain**: which address receives messages and
   is shown on the page? It depends on the domain.
 - **Email provider**: accept the recommendation in section 5?
@@ -276,7 +337,7 @@ end with a period. Buttons say exactly what happens.
 - **Real content**: bio, experience, projects, CV and photo are needed
   before launch.
 
-## 8. Acceptance criteria
+## 9. Acceptance criteria
 v1 is done when:
 - [ ] All sections in 3.2 match the design reference at 360px, 768px
       and 1440px wide.
@@ -286,7 +347,8 @@ v1 is done when:
       the right reply-to address; invalid input and spam attempts are
       rejected (intent success criterion: people can contact me).
 - [ ] The Resume button downloads the CV PDF.
-- [ ] Impressum and Datenschutz are live and linked from every page.
+- [ ] Impressum and Datenschutz, made with the generator, are live,
+      linked from every page, and name every service in use (3.10).
 - [ ] No cookies, and no third-party requests before a video is
       played.
 - [ ] Lighthouse: performance 95+, accessibility 100, on mobile.
@@ -295,7 +357,7 @@ v1 is done when:
 - [ ] The live site is on the custom domain, with link previews
       showing correctly on LinkedIn.
 
-## 9. Design decisions made during review
+## 10. Design decisions made during review
 | Decision | Instead of |
 |---|---|
 | Projects directly after the hero | After Experience |
