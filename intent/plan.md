@@ -1,0 +1,106 @@
+# Plan: Personal website v1
+Author: Claude. Status: draft. Date: 2026-10-17.
+Source: [intent.md](intent.md), [spec.md](spec.md),
+[design-reference.html](design-reference.html).
+
+Written in plan mode and approved by the owner before being committed.
+Any deviation during the build updates this file in the same commit.
+
+## 1. Approach
+- **Stack**: Next.js 16 (App Router, Turbopack), React 19, TypeScript
+  (version pinned by `create-next-app`), Tailwind CSS 4, npm.
+- **Rendering**: every page is static; the only server code is
+  `POST /api/contact`.
+- **Content**: typed TypeScript data files validated with Zod at build
+  time; legal pages as MDX (`@next/mdx`). No CMS, no database.
+- **Contact email**: Resend (EU region), per spec 5. *Assumption*: the
+  owner accepts Resend (spec 8.2); swapping providers only touches
+  `lib/email.ts`.
+- **Workflow**: one branch and PR per phase
+  (`.claude/rules/git-conventions.md`); each PR gets a Vercel preview
+  deploy for review.
+
+Versions at planning time: Node 24.15, npm 11.12, Next.js 16.4,
+React 19.3, Tailwind CSS 4.3, Zod 4.6, Resend 6.34, Playwright 1.64,
+Vitest 5.0.
+
+## 2. Files
+New project at the repo root; `intent/` stays as is.
+
+| Path | Purpose |
+|---|---|
+| `package.json`, `next.config.ts`, `tsconfig.json`, `eslint.config.mjs`, `postcss.config.mjs` | Scaffold and config (`create-next-app`), MDX enabled |
+| `CLAUDE.md` | Project guide for Claude: stack, commands, folder map, links to spec and rules (playbook play 4) |
+| `app/globals.css` | Tailwind 4 `@theme` tokens from spec 4.2–4.5 (colors, radii, spacing, breakpoints 560/900) |
+| `app/layout.tsx` | `next/font/google` Host Grotesk (self-hosted at build), skip link, header, footer, metadata |
+| `app/page.tsx` | Home: composes the sections in spec 3.2 order |
+| `app/impressum/page.mdx`, `app/datenschutz/page.mdx` | Legal pages (placeholder text until generated, spec 3.10) |
+| `app/not-found.tsx` | 404 |
+| `app/api/contact/route.ts` | Validate, spam checks, send email, JSON response; `preferredRegion = 'fra1'` |
+| `app/opengraph-image.tsx`, `app/sitemap.ts`, `app/robots.ts` | Link previews, sitemap, robots |
+| `components/site/` | `Header`, `MobileMenu`, `Footer`, `SocialLinks` |
+| `components/sections/` | `Hero`, `Projects`, `ProjectRow`, `About`, `Experience`, `Stack`, `Contact` |
+| `components/ui/` | `Button`, `IconButton`, `TextLink`, `Tag`, `Icon` (sprite) |
+| `components/hero/HalftoneRing.tsx` | Client canvas ring: loop, pause off-screen and in hidden tabs, reduced motion |
+| `components/hero/Photo.tsx` | Placeholder card until a photo exists; photo without card after |
+| `components/media/VideoPoster.tsx`, `VideoDialog.tsx` | Poster and click-to-load `<video>` with captions in a `<dialog>` |
+| `components/contact/ContactForm.tsx` | Client form: field validation, counter, consent, honeypot, success and error states |
+| `content/schema.ts` | Zod schemas: profile, status, projects (≤3 decisions), experience (≤3 results), stack (usedIn → project ids) |
+| `content/*.ts` | `profile`, `status`, `projects`, `experience`, `stack`; entries flagged `placeholder: true` |
+| `lib/contact.ts` | Shared input schema and spam checks (honeypot, minimum fill time) used by form and route |
+| `lib/email.ts` | Resend client, EU region, reply-to = visitor |
+| `scripts/check-placeholders.ts` | Fails the build when `VERCEL_ENV=production` and any placeholder remains |
+| `public/cv/Monzer-Hweit-CV.pdf`, `public/photo/`, `public/videos/` | Assets (placeholders until real) |
+| `tests/unit/*.test.ts` | Vitest: schemas, contact validation, spam checks, placeholder check |
+| `tests/e2e/*.spec.ts` | Playwright: sections, navigation, mobile menu, form, video click-to-load, axe |
+| `lighthouserc.json` | Lighthouse CI thresholds (performance ≥95, accessibility 100, mobile) |
+| `.github/workflows/ci.yml` | Typecheck, lint, unit, build, e2e with axe, Lighthouse on every PR |
+| `.env.example` | `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM` (no secrets committed) |
+
+## 3. Order of work
+Each phase is one PR; it is done when its proof passes.
+
+| # | Phase (branch) | Delivers | Proof |
+|---|---|---|---|
+| 1 | Scaffold (`chore/scaffold`) | Next.js app, Tailwind, ESLint, Vitest, Playwright, CI workflow, `CLAUDE.md`, `.env.example` | CI green on an empty page |
+| 2 | Design system (`feat/design-tokens`) | Tokens, font, UI primitives, header, mobile menu, footer, skip link | e2e: menu below 900px, keyboard focus visible; axe clean |
+| 3 | Content (`feat/content-model`) | Schemas, placeholder content from the design reference, placeholder check | unit: schemas reject >3 decisions or results and unknown project ids; check fails only for production |
+| 4 | Home sections (`feat/home-sections`) | Hero (static ring), Projects, About, Experience, Stack, Contact layout | e2e: all sections at 360, 768 and 1440 px, no horizontal scroll; visual match with the design reference |
+| 5 | Media (`feat/video-dialog`) | Posters, click-to-load video dialog, captions | e2e: zero third-party requests before play; dialog works with keyboard and Escape |
+| 6 | Halftone loop (`feat/halftone-loop`) | 2–3 loop prototypes on a preview deploy, owner picks one, final version | Reduced motion = static; paused off-screen and in hidden tabs; ≥60 fps with mobile CPU throttling |
+| 7 | Contact (`feat/contact-form`) | Route handler, Resend, honeypot, minimum fill time, error and success states | unit: validation and spam checks; e2e: success and failure (email mocked); manual: real test message with correct reply-to |
+| 8 | Legal and SEO (`feat/legal-seo`) | Impressum, Datenschutz, 404, metadata, OG image, JSON-LD, sitemap, robots | Pages linked from the footer; OG image renders; Lighthouse SEO 100 |
+| 9 | Deploy (`chore/deploy`) | Vercel project from GitHub, env vars, functions in `fra1`, Firewall rate-limit rule on `/api/contact` | Preview deploy works end to end; rate limit returns 429 |
+| 10 | Launch (`feat/launch-content`) | Real content, photo, CV, videos, generated legal texts, custom domain | Placeholder check passes; all acceptance criteria in spec 9 met |
+
+Phases 1–9 can run on placeholders. Phase 10 waits for the owner inputs
+in section 5.
+
+## 4. Risks
+| Risk | Mitigation |
+|---|---|
+| TypeScript 7 is current; Next.js may not support it yet | Keep the version `create-next-app` installs |
+| Host Grotesk missing from `next/font/google` | Fall back to `next/font/local` with the OFL font files from Google Fonts |
+| The looping canvas hurts performance or battery | Cap device pixel ratio at 2, pause via IntersectionObserver and `visibilitychange`, measure in phase 6 |
+| Spam through the form | Honeypot, minimum fill time, server validation, Firewall rate limit; no third-party captcha |
+| Resend only sends from a verified domain | Until the domain exists, use Resend's test sender to the owner's own address; verify the domain in phase 10 |
+| Placeholder content reaches production | `check-placeholders` runs in the production build; previews stay allowed |
+| Video host undecided (spec 8.1) | Build the dialog for self-hosted MP4 with WebVTT captions; add a YouTube variant only if the owner chooses it |
+| Legal texts depend on the final services | Generate them last, in phase 10, from the final list of services |
+
+## 5. Owner inputs needed
+| Input | Needed by |
+|---|---|
+| Accept Resend; create an account and API key | Phase 7 |
+| Vercel account access (connect the GitHub repo) | Phase 9 |
+| Address for the Impressum (spec 6, concern 1) | Phase 10 |
+| Domain name and contact email address | Phase 10 |
+| Video hosting decision; real videos with captions | Phase 10 |
+| Real bio, experience, projects, CV and photo | Phase 10 |
+
+## 6. Proof (definition of done)
+- Every PR: typecheck, lint, unit tests, build, Playwright e2e with
+  axe, and Lighthouse CI (performance ≥95, accessibility 100 on mobile)
+  pass in CI.
+- Each phase's proof from section 3 is shown in its PR description.
+- v1 is done when all acceptance criteria in spec section 9 are checked.
