@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+/* Design tokens (spec 4.2–4.5) arrive in phase 2. Light only in v1. */
+body {
+  background: #ffffff;
+  color: #3d3d3b;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
