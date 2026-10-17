@@ -31,10 +31,27 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
 (`lighthouserc.json`: performance ≥ 0.95, accessibility 1.0, mobile).
 
 ## Layout
-- `app/`: routes, layout, global styles
-- `components/`, `content/`, `lib/`, `scripts/`: added from phase 2 on
-  (see plan section 2)
+- `app/`: routes, root layout (font, skip link, header, footer),
+  `globals.css` with the Tailwind `@theme` tokens
+- `components/ui/`: primitives (`Icon`, `Button`/`ButtonLink`,
+  `IconLink`, `TextLink`, `Tag`)
+- `components/site/`: page frame (`Header`, `HeaderShell`,
+  `MobileMenu`, `Footer`, `SocialLinks`)
+- `content/site.ts`: name, navigation, social and legal links
+- `lib/cn.ts`: class name helper
+- `scripts/`: added in later phases (see plan section 2)
 - `tests/unit/`: Vitest; `tests/e2e/`: Playwright
+
+## Tokens (use these, never raw values)
+Colors `bg surface ink ink-2 ink-3 ink-4 line line-2 signal live danger`
+(e.g. `text-ink-3`, `bg-surface`); radii `rounded-tag|ctl|media|card|photo`;
+breakpoints `phone:` (560px) and `desk:` (900px); `wrap` utility for the
+page column; spacing `h-header`, `py-section`, `px-gutter`.
+
+## Next.js 16 gotchas
+- `cacheComponents` is on: `new Date()`, `Math.random()` and similar
+  fail the prerender. Put them in a `"use cache"` function with an
+  explicit `cacheLife(...)`, or in a Client Component.
 
 ## Rules
 - Follow the spec. If the build must deviate, update `intent/plan.md`
@@ -44,4 +61,4 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
 - No cookies, trackers or third-party requests on page load (spec 3.9).
 - Never commit secrets; `.env.example` lists the variable names.
 - Light theme only; colors, type and spacing come from the tokens in
-  `app/globals.css` (from phase 2).
+  `app/globals.css`.
