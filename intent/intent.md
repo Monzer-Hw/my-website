@@ -10,15 +10,13 @@ approach AI engineering problems.
 ## Proposed outcome
 An attractive, professional personal website that presents who I am,
 my projects, my experience and my tech stack, and makes it easy to
-get in touch. The first version is a static portfolio, built so that
-a blog, a German version and an AI assistant can be added later
-without a rewrite.
+get in touch. This intent covers v1 only: a static portfolio. Later
+stages are covered by their own intent documents.
 
 Goals, in priority order:
 1. Showcase my projects
 2. Attract inbound opportunities (roles, freelance, collaborations)
 3. Act as a single hub for CV, links and contact
-4. Build a personal brand through writing (later, see Roadmap)
 
 v1 is successful when:
 - It is live and I am proud to share the link
@@ -66,25 +64,20 @@ Quality bar:
   link previews), Person structured data
 - Cookieless analytics (e.g. Vercel Web Analytics)
 
-## Roadmap (after v1)
-- **v2: "Ask about me" AI assistant**: a chat on the site that answers
-  visitors' questions from my CV, project write-ups and an FAQ (RAG),
-  refuses or redirects to contact when the answer isn't in my
-  content, and links to relevant projects. Doubles as a live demo of
-  my work. Requires a monthly spending cap, per-visitor rate limits,
-  staying on topic, evaluation against tricky questions, and a
-  privacy policy update; chats are not stored without a reason.
-- **Blog / writing**
-- **German version**
-- **Possible extras**: testimonials, certifications, talks and
-  open-source contributions, contact form
+## Out of scope
+Each of these gets its own intent document in a later stage:
+- "Ask about me" AI assistant
+- Blog / writing
+- German version
+- Extras: testimonials, certifications, talks, open-source
+  contributions, contact form
 
 ## Constraints
 - Hosting on Vercel; a custom domain will be bought (ideally before
   launch, so shared links and the contact address stay stable)
-- Proposed stack: Next.js + Tailwind CSS + MDX (content as files, so
-  the blog plugs in later; supports i18n and the v2 assistant)
-- English at launch; URL structure planned so German can be added
+- Proposed stack: Next.js + Tailwind CSS + MDX (content as files),
+  so later stages can build on v1 without a rewrite
+- English only; URL structure leaves room for other languages
   without breaking links
 - Based in Germany: an Impressum (§5 DDG, the site is business-like)
   and a privacy policy (GDPR; Vercel processes visitor IPs) are
