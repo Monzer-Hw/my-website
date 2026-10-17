@@ -28,6 +28,14 @@ Deviations recorded in phase 1: `@types/node` raised to 24 (Vitest 5
 requires ≥22; the runtime is Node 24). The dev-only ESLint 9 chain
 reports `npm audit` warnings; production dependencies have none.
 
+Deviations recorded in phase 2: `content/site.ts`, `HeaderShell` and
+`lib/cn.ts` added (see section 2). The footer year runs in a
+`"use cache"` function with `cacheLife("max")`, because
+`cacheComponents` forbids `new Date()` in the prerendered shell; pages
+revalidate at most every 30 days. `.impeccable/config.json` is tracked:
+it suppresses the design linter's warning for the Helvetica fallback
+that spec 4.3 prescribes.
+
 ## 2. Files
 New project at the repo root; `intent/` stays as is.
 
@@ -44,9 +52,11 @@ New project at the repo root; `intent/` stays as is.
 | `app/not-found.tsx` | 404 |
 | `app/api/contact/route.ts` | Validate, spam checks, send email, JSON response; `preferredRegion = 'fra1'` |
 | `app/opengraph-image.tsx`, `app/sitemap.ts`, `app/robots.ts` | Link previews, sitemap, robots |
-| `components/site/` | `Header`, `MobileMenu`, `Footer`, `SocialLinks` |
+| `components/site/` | `Header`, `HeaderShell` (client: scroll divider), `MobileMenu`, `Footer`, `SocialLinks` |
 | `components/sections/` | `Hero`, `Projects`, `ProjectRow`, `About`, `Experience`, `Stack`, `Contact` |
-| `components/ui/` | `Button`, `IconButton`, `TextLink`, `Tag`, `Icon` (sprite) |
+| `components/ui/` | `Button` (`Button`, `ButtonLink`), `IconButton` (`IconLink`: icon-only links), `TextLink`, `Tag`, `Icon` (inline SVG components) |
+| `content/site.ts` | Name, navigation, social and legal links; added in phase 2 because the header needs it, validated from phase 3 |
+| `lib/cn.ts` | Class name helper |
 | `components/hero/HalftoneRing.tsx` | Client canvas ring: loop, pause off-screen and in hidden tabs, reduced motion |
 | `components/hero/Photo.tsx` | Placeholder card until a photo exists; photo without card after |
 | `components/media/VideoPoster.tsx`, `VideoDialog.tsx` | Poster and click-to-load `<video>` with captions in a `<dialog>` |
