@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Monzer Portfolio Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300..800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+
+/* Layout: label/content ledger (4/8) on a 1180px wrap; white and surface bands alternate. Light only by design. */
+:root{
+  --bg:#FFFFFF;
+  --surface:#F3F3F2;
+  --ink:#000000;
+  --ink-2:#3D3D3B;
+  --ink-3:#6B6B68;
+  --ink-4:#9A9A96;      /* decorative only: icons, initials. Never text. */
+  --line:#E8E8E6;
+  --line-2:#D4D4D1;
+  --signal:#2F49D1;     /* focus rings (and this preview's change markers) */
+  --signal-wash:#EBEEFC;
+  --live:#2E9E5B;       /* "current / live" dots only */
+  --live-2:#7EE0A2;
+  --poster:#0E0E0E;
+  --poster-2:#1C1C1B;
+  --poster-line:#2E2E2C;
+  --poster-ink:#A9A9A4;
+  --danger:#B3261E;
+
+  --f:"Host Grotesk","Helvetica Neue",Arial,sans-serif;
+  --wrap:1180px;
+  --gutter:clamp(20px,5vw,48px);
+  --header-h:72px;
+  --section-y:clamp(96px,11vw,160px);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --r-ctl:8px;          /* buttons, inputs, small controls: squared, never pills */
+  color-scheme:light;
+}
+
+html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--header-h) + 16px)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{margin:0;background:var(--bg);color:var(--ink-2);font-family:var(--f);font-size:1.0625rem;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+h1,h2,h3,p,dl,dd{margin:0}
+h1,h2,h3{color:var(--ink);font-weight:500;text-wrap:balance}
+p,li,dd{text-wrap:pretty}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{width:100%;max-width:calc(var(--wrap) + 2 * var(--gutter));margin-inline:auto;padding-inline:var(--gutter)}
+:focus-visible{outline:2px solid var(--signal);outline-offset:3px;border-radius:6px}
+.skip{position:absolute;left:12px;top:-80px;z-index:100;padding:10px 16px;border-radius:var(--r-ctl);background:var(--ink);color:var(--bg);text-decoration:none}
+.skip:focus{top:12px}
+
+/* Prototype notice */
+.proto{background:var(--ink);color:var(--bg);font-size:.8125rem;line-height:1.4}
+.proto .wrap{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:space-between;padding-block:9px}
+.proto span{color:var(--ink-4)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:46px;padding:0 20px;border:0;border-radius:var(--r-ctl);font-size:.9375rem;font-weight:500;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background-color .2s,box-shadow .2s,transform .12s}
+.btn:active{transform:scale(.98)}
+.btn-ink{background:var(--ink);color:var(--bg)}
+.btn-ink:hover{background:#2B2B2B}
+.btn-soft{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn-soft:hover{box-shadow:inset 0 0 0 1px var(--line-2)}
+.band .btn-soft{background:var(--bg)}
+.btn-sm{min-height:38px;padding:0 16px;font-size:.875rem}
+.tlink{color:var(--ink);font-weight:500;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;text-decoration-color:var(--line-2);transition:text-decoration-color .2s;background:none;border:0;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.tlink:hover{text-decoration-color:var(--ink)}
+.iconlink{display:grid;place-items:center;width:44px;height:44px;border-radius:var(--r-ctl);background:var(--bg);box-shadow:inset 0 0 0 1px var(--line-2);color:var(--ink-2);transition:color .2s,box-shadow .2s,transform .12s}
+.iconlink:hover{color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.iconlink:active{transform:scale(.96)}
+.iconlink svg{width:20px;height:20px;fill:currentColor}
+
+/* Header */
+.site-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .25s}
+.site-header.is-scrolled{border-bottom-color:var(--line)}
+.header-inner{display:flex;align-items:center;gap:32px;height:var(--header-h)}
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--ink);font-weight:600;font-size:1.0625rem;letter-spacing:-.01em;text-decoration:none}
+.brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:.6875rem;font-weight:600;letter-spacing:.02em}
+.nav{margin-inline:auto}
+.nav ul{display:flex;gap:2px;list-style:none;margin:0;padding:0}
+.nav a{display:block;padding:8px 12px;color:var(--ink-3);font-size:.875rem;text-decoration:none;transition:color .2s}
+.nav a:hover{color:var(--ink)}
+.header-actions{display:flex;align-items:center;gap:8px}
+.hsocial{display:flex;gap:2px}
+.hicon{display:grid;place-items:center;width:38px;height:38px;border-radius:var(--r-ctl);color:var(--ink-3);transition:color .2s,background-color .2s}
+.hicon:hover{color:var(--ink);background:var(--surface)}
+.hicon svg{width:18px;height:18px;fill:currentColor}
+.menu-btn{display:none;width:38px;height:38px;border:0;border-radius:var(--r-ctl);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);cursor:pointer;place-items:center}
+.menu-btn .ic{width:18px;height:18px}
+.mnav{display:none}
+@media (max-width:820px){
+  .nav{display:none}
+  .header-actions{margin-left:auto}
+  .menu-btn{display:grid}
+  .mnav:not([hidden]){display:block;border-top:1px solid var(--line);background:var(--bg)}
+  .mnav ul{list-style:none;margin:0;padding:8px 0 16px}
+  .mnav a{display:flex;justify-content:space-between;align-items:center;min-height:52px;border-bottom:1px solid var(--line);color:var(--ink);font-size:1.125rem;text-decoration:none}
+  .mnav a .ic{color:var(--ink-3)}
+  .mnav .msocial{display:flex;gap:8px;padding-bottom:20px}
+  .mnav .msocial a{display:grid;min-height:0;border-bottom:0}
+}
+@media (max-width:560px){.hsocial{display:none}}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding-block:clamp(40px,6vw,88px) clamp(56px,7vw,96px)}
+.halftone{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,#000 78%,transparent);mask-image:linear-gradient(180deg,#000 78%,transparent)}
+.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:48px;align-items:center}
+.name{font-size:clamp(3.5rem,1.6rem + 7.4vw,7.75rem);font-weight:600;line-height:.9;letter-spacing:-.055em}
+.name span{display:block}
+.intro{margin-top:32px;max-width:30ch;font-size:clamp(1.25rem,1.05rem + .7vw,1.625rem);line-height:1.35;letter-spacing:-.015em;color:var(--ink-2)}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+/* Photo: a placeholder card until the real photo exists; the real photo has no card */
+.photo{position:relative;justify-self:end;width:100%;max-width:440px;margin:0}
+.photo img{display:block;width:100%;height:auto;filter:grayscale(1) contrast(1.05)}
+.photo .ini{display:none}
+.photo.is-placeholder{aspect-ratio:4/5;border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 38%,#F4F4F2,#DADAD7);box-shadow:0 1px 0 rgba(0,0,0,.04),0 30px 60px -30px rgba(0,0,0,.35)}
+.photo.is-placeholder .ini{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:12px;font-size:clamp(4rem,3rem + 4vw,7rem);font-weight:600;line-height:1;letter-spacing:-.06em;color:#C9C9C6;text-align:center}
+.photo .ini small{font-size:.8125rem;font-weight:400;letter-spacing:0;color:var(--ink-3)}
+.facts{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 28px;list-style:none;margin:0;padding:20px 0 0;border-top:1px solid var(--line)}
+.facts li{display:grid;grid-template-columns:16px minmax(0,1fr);grid-template-rows:auto auto;align-content:start;column-gap:10px;font-size:.875rem;line-height:1.4}
+.facts .ic{grid-row:1/3;margin-top:2px;color:var(--ink-3)}
+.facts strong{grid-column:2;color:var(--ink);font-weight:500}
+.facts span{grid-column:2;color:var(--ink-3)}
+.facts .live-dot{grid-row:1/3;width:8px;height:8px;margin:6px 4px 0;border-radius:50%;background:var(--live)}
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:minmax(0,1fr)}
+  .facts{order:2}
+  .photo{order:3;max-width:300px;justify-self:center}
+}
+@media (max-width:560px){.facts{grid-template-columns:1fr;gap:14px}}
+
+/* Section scaffolding */
+.section{padding-block:var(--section-y)}
+.band{background:var(--surface)}
+.shead{max-width:720px}
+.h2{font-size:clamp(2rem,1.3rem + 2.4vw,3.25rem);line-height:1.04;letter-spacing:-.04em}
+.lede{margin-top:18px;max-width:56ch;font-size:1.1875rem;line-height:1.55;color:var(--ink-3)}
+
+/* Projects: title, media and links on the left (sticky); story on the right */
+.rows{margin-top:64px;border-bottom:1px solid var(--line-2)}
+.row{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:16px 56px;padding:40px 0;border-top:1px solid var(--line-2)}
+.row h3{font-size:clamp(1.5rem,1.2rem + 1vw,2rem);line-height:1.1;letter-spacing:-.03em}
+.row-side{position:sticky;top:calc(var(--header-h) + 24px);align-self:start;min-width:0}
+.when{margin-top:10px;display:inline-flex;align-items:center;gap:8px;font-size:.875rem;color:var(--ink-3)}
+.when::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.when.wip::before{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ink)}
+.row-body{min-width:0}
+.row-body>p{max-width:60ch}
+
+.media{position:relative;display:block;width:100%;max-width:100%;aspect-ratio:16/9;margin:18px 0 0;padding:0;border:0;border-radius:14px;overflow:hidden;background:var(--poster);cursor:pointer;text-align:left;color:var(--poster-ink)}
+.media .art{position:absolute;inset:0;display:grid;place-items:center;transition:transform .5s var(--ease),opacity .3s}
+.media:hover .art{transform:scale(1.02);opacity:.85}
+.play{position:absolute;right:12px;bottom:12px;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#000;box-shadow:0 8px 20px -8px rgba(0,0,0,.6);transition:transform .25s var(--ease)}
+.play .ic{width:18px;height:18px;fill:currentColor;stroke:none;margin-left:2px}
+.media:hover .play{transform:scale(1.08)}
+.chip{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-size:.75rem;font-variant-numeric:tabular-nums;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.chip .ic{width:14px;height:14px}
+
+/* Poster art (placeholder stills, one per project) */
+.art-rag{display:flex!important;flex-direction:column;justify-content:center;gap:8px;padding:6% 8% 18%;font-size:.625rem;line-height:1.45}
+.art-rag .q{align-self:flex-end;max-width:80%;padding:6px 9px;border-radius:10px 10px 2px 10px;background:var(--poster-line);color:#E8E8E4}
+.art-rag .a{max-width:86%;padding:7px 9px;border-radius:10px 10px 10px 2px;background:var(--poster-2)}
+.art-rag .a b{display:inline-block;margin:0 1px;padding:0 4px;border-radius:3px;background:#fff;color:#000;font-weight:600;font-size:.9em}
+.sgrid{display:grid;grid-template-columns:repeat(9,1fr);width:min(34%,200px);aspect-ratio:1;border:2px solid var(--poster-ink);background:var(--poster-2)}
+.sgrid i{display:grid;place-items:center;border-right:1px solid var(--poster-line);border-bottom:1px solid var(--poster-line);font-style:normal;font-size:clamp(.4375rem,.3rem + .4vw,.75rem);color:#fff;font-variant-numeric:tabular-nums}
+.sgrid i:nth-child(9n+3),.sgrid i:nth-child(9n+6){border-right-color:var(--poster-ink)}
+.sgrid i:nth-child(n+19):nth-child(-n+27),.sgrid i:nth-child(n+46):nth-child(-n+54){border-bottom-color:var(--poster-ink)}
+.sgrid i.g{color:var(--live-2)}
+.flow{display:flex!important;align-items:center;justify-content:center;gap:6px;padding:0 5% 10%}
+.node{padding:6px 8px;border-radius:8px;background:var(--poster-2);box-shadow:inset 0 0 0 1px var(--poster-line);font-size:.625rem;line-height:1.3;color:#E8E8E4;white-space:nowrap}
+.node small{display:block;color:var(--poster-ink);font-size:.9em}
+.edge{flex:1;max-width:16px;min-width:6px;height:1px;background:var(--poster-ink)}
+
+.row-links{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:.875rem}
+.row-links .ic{color:var(--ink-3)}
+.decisions{display:grid;gap:10px;list-style:none;margin:22px 0 0;padding:0}
+.decisions li{display:grid;grid-template-columns:minmax(0,13ch) minmax(0,1fr);gap:4px 20px;padding-top:10px;border-top:1px dashed var(--line-2);font-size:.9375rem}
+.decisions b{color:var(--ink);font-weight:500}
+.decisions span{color:var(--ink-2)}
+.tools{margin-top:18px;font-size:.875rem;color:var(--ink-3)}
+@media (max-width:760px){
+  .row{grid-template-columns:1fr}
+  .row-side{position:static}
+  .decisions li{grid-template-columns:1fr}
+}
+
+/* Stack */
+.stack{margin-top:56px;border-bottom:1px solid var(--line)}
+.stack div{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:6px 56px;padding:20px 0;border-top:1px solid var(--line)}
+.stack dt{color:var(--ink);font-weight:500}
+.stack dd{color:var(--ink-2)}
+.stack dd .tag{display:inline-block;margin-left:4px;padding:1px 8px;border-radius:4px;box-shadow:inset 0 0 0 1px var(--line-2);font-size:.8125rem;color:var(--ink-3);white-space:nowrap}
+.used{display:block;margin-top:6px;font-size:.875rem;color:var(--ink-3)}
+.used a{color:var(--ink-2);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:var(--line-2);text-underline-offset:4px;transition:text-decoration-color .2s}
+.used a:hover{color:var(--ink);text-decoration-color:var(--ink)}
+@media (max-width:640px){.stack div{grid-template-columns:1fr}}
+
+/* About */
+.split{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:24px 56px;align-items:start}
+.split>header{position:sticky;top:calc(var(--header-h) + 32px)}
+.statement{font-size:clamp(1.5rem,1.1rem + 1.6vw,2.25rem);line-height:1.28;letter-spacing:-.03em;color:var(--ink);max-width:32ch}
+.bio{display:grid;gap:16px;margin-top:28px;max-width:62ch;color:var(--ink-2)}
+@media (max-width:860px){.split{grid-template-columns:1fr}.split>header{position:static}}
+
+/* Experience */
+.jobs{list-style:none;margin:64px 0 0;padding:0;border-bottom:1px solid var(--line-2)}
+.job{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:12px 56px;padding:44px 0;border-top:1px solid var(--line-2)}
+.job-when{display:flex;flex-direction:column;gap:4px}
+.job-when time{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+.job-when span{font-size:.9375rem;color:var(--ink-3)}
+.job-when .current{display:inline-flex;align-items:center;gap:8px;margin-top:6px;font-size:.875rem;color:var(--ink)}
+.job-when .current::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--live)}
+.job h3{font-size:clamp(1.375rem,1.15rem + .8vw,1.75rem);line-height:1.15;letter-spacing:-.025em}
+.job .org{margin-top:4px;color:var(--ink-3)}
+.job .summary{margin-top:16px;max-width:60ch}
+.outcomes{display:grid;gap:8px;list-style:none;margin:18px 0 0;padding:0;max-width:62ch}
+.outcomes li{position:relative;padding-left:20px;font-size:.9375rem}
+.outcomes li::before{content:"";position:absolute;left:0;top:.72em;width:8px;height:1px;background:var(--ink-3)}
+@media (max-width:760px){.job{grid-template-columns:1fr}.job-when{flex-direction:row;flex-wrap:wrap;gap:4px 12px}.job-when .current{margin-top:0}}
+
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px 72px;align-items:start}
+.direct{margin-top:36px;border-top:1px solid var(--line-2)}
+.direct>div{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px 16px;min-height:60px;padding:12px 0;border-bottom:1px solid var(--line-2)}
+.direct span{color:var(--ink-3);font-size:.9375rem}
+.direct b{color:var(--ink);font-weight:500;user-select:all}
+.copy{display:inline-flex;align-items:center;gap:8px}
+.copy button{min-height:30px;padding:0 12px;border:0;border-radius:6px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--line-2);font-size:.8125rem;color:var(--ink);cursor:pointer}
+.copy button:hover{box-shadow:inset 0 0 0 1px var(--ink-3)}
+
+.form{padding:clamp(24px,3.6vw,44px);border-radius:20px;background:var(--bg);box-shadow:0 0 0 1px var(--line)}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{color:var(--ink);font-size:.9375rem;font-weight:500}
+.field input,.field textarea{width:100%;min-height:50px;padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--r-ctl);background:var(--bg);color:var(--ink);font:inherit;transition:border-color .2s,box-shadow .2s}
+.field textarea{min-height:150px;resize:vertical;line-height:1.5}
+.field input::placeholder,.field textarea::placeholder{color:var(--ink-3);opacity:.85}
+.field input:hover,.field textarea:hover{border-color:var(--ink-3)}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 4px var(--signal-wash)}
+.field [aria-invalid="true"]{border-color:var(--danger)}
+.count{align-self:flex-end;font-size:.8125rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.err{font-size:.875rem;color:var(--danger)}
+.err:empty{display:none}
+.consent{grid-column:1/-1;display:grid;grid-template-columns:20px minmax(0,1fr);gap:4px 12px;font-size:.9375rem;color:var(--ink-2);cursor:pointer}
+.consent input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--ink);cursor:pointer}
+.consent a{color:var(--ink);text-underline-offset:3px}
+.consent .err{grid-column:2}
+.ffoot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+.ffoot p{font-size:.875rem;color:var(--ink-3)}
+.btn.is-loading{pointer-events:none;opacity:.6}
+.success{padding-block:12px}
+.success .mark{display:grid;place-items:center;width:48px;height:48px;margin-bottom:22px;border-radius:50%;background:var(--ink);color:var(--bg)}
+.success .mark .ic{width:22px;height:22px;stroke-width:2.2}
+.success h3{font-size:clamp(1.5rem,1.2rem + 1vw,2rem);letter-spacing:-.03em;outline:none}
+.success p{margin-top:12px;max-width:46ch;color:var(--ink-2)}
+.success .btn{margin-top:28px}
+.cside{display:grid;gap:20px;min-width:0}
+.elsewhere{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 16px;padding-inline:4px}
+.elsewhere p{font-size:.9375rem;color:var(--ink-3)}
+.elsewhere ul{display:flex;gap:8px;list-style:none;margin:0;padding:0}
+@media (max-width:900px){.contact-grid{grid-template-columns:1fr}}
+@media (max-width:540px){.fgrid{grid-template-columns:1fr}}
+
+/* Footer */
+.site-footer{padding:24px 0 32px;border-top:1px solid var(--line);font-size:.9375rem;color:var(--ink-3)}
+.foot-bottom{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 32px;font-size:.875rem}
+.foot-bottom ul{display:flex;gap:20px;list-style:none;margin:0;padding:0}
+.foot-bottom a{text-decoration:none}
+.foot-bottom a:hover{color:var(--ink)}
+
+/* Demo video dialog */
+.vdlg{width:min(960px,calc(100vw - 32px));max-width:none;padding:0;border:0;border-radius:18px;background:var(--poster);color:#fff;overflow:hidden}
+.vdlg::backdrop{background:rgba(0,0,0,.7)}
+.vstage{position:relative;aspect-ratio:16/9;display:grid;place-items:center;background:var(--poster-2)}
+.vstage .msg{max-width:46ch;padding:24px;text-align:center}
+.vstage .msg b{display:block;font-size:clamp(1.125rem,1rem + .6vw,1.5rem);font-weight:500;letter-spacing:-.02em}
+.vstage .msg p{margin-top:10px;color:var(--poster-ink);font-size:.9375rem}
+.vbar{display:flex;align-items:center;gap:14px;padding:14px 18px;font-size:.875rem;color:var(--poster-ink);font-variant-numeric:tabular-nums}
+.vbar .track{flex:1;height:3px;border-radius:2px;background:var(--poster-line)}
+.vbar .track i{display:block;width:0;height:100%;background:#fff}
+.vclose{position:absolute;top:12px;right:12px;width:38px;height:38px;display:grid;place-items:center;border:0;border-radius:var(--r-ctl);background:rgba(255,255,255,.12);color:#fff;cursor:pointer}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:70;transform:translateX(-50%);max-width:calc(100vw - 32px);padding:12px 18px;border-radius:12px;background:var(--ink);color:var(--bg);font-size:.875rem;box-shadow:0 12px 30px -10px rgba(0,0,0,.5)}
+
+/* Change markers (preview only) */
+.show-changes [data-change]{position:relative;outline:2px dashed var(--signal);outline-offset:5px;border-radius:8px}
+.show-changes [data-change]::after{content:attr(data-change);position:absolute;top:-14px;left:-14px;z-index:6;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--signal);color:#fff;font:600 11px/1 var(--f);font-variant-numeric:tabular-nums;pointer-events:none}
+.show-changes .row-side[data-change]{position:sticky}
+.flash{animation:flash 1.4s var(--ease)}
+@keyframes flash{0%,40%{box-shadow:0 0 0 8px var(--signal-wash)}100%{box-shadow:0 0 0 0 transparent}}
+
+.cpanel{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.cbtn{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px;border:0;border-radius:var(--r-ctl);background:var(--signal);color:#fff;font-size:.875rem;font-weight:500;cursor:pointer;box-shadow:0 12px 30px -10px rgba(47,73,209,.7)}
+.cbtn b{display:grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#fff;color:var(--signal);font-size:.75rem}
+.clist{width:min(380px,calc(100vw - 32px));max-height:min(70vh,560px);overflow:auto;padding:8px;border-radius:18px;background:var(--bg);box-shadow:0 0 0 1px var(--line),0 24px 60px -20px rgba(0,0,0,.35)}
+.clist h2{padding:10px 12px 6px;font-size:.9375rem;font-weight:600}
+.clist p.sub{padding:0 12px 8px;font-size:.8125rem;color:var(--ink-3)}
+.clist h3{padding:12px 12px 4px;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.clist ol{list-style:none;margin:0;padding:0}
+.clist button{display:grid;grid-template-columns:22px minmax(0,1fr);gap:2px 12px;width:100%;padding:10px 12px;border:0;border-radius:12px;background:none;text-align:left;cursor:pointer;font-size:.875rem;line-height:1.4}
+.clist button:hover{background:var(--surface)}
+.clist .n{grid-row:1/3;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--signal);color:#fff;font-size:11px;font-weight:600;font-style:normal}
+.clist .n.off{background:var(--bg);color:var(--signal);box-shadow:inset 0 0 0 1.5px var(--signal)}
+.clist strong{color:var(--ink);font-weight:500}
+.clist span{color:var(--ink-3);font-size:.8125rem}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16"/><path d="M4 16h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4"/><path d="m16 8 4 4-4 4"/></symbol>
+  <symbol id="i-github" viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.82 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></symbol>
+  <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="proto" role="note">
+  <div class="wrap"><p>Design preview of your portfolio with the review suggestions and your edits applied.</p><span>All names, companies, numbers and projects are placeholders.</span></div>
+</div>
+
+<header class="site-header" id="top">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="Monzer Hweit, back to top"><span class="brand-mark" aria-hidden="true">MH</span>Monzer Hweit</a>
+    <nav class="nav" aria-label="Main" data-change="2">
+      <ul>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#stack">Stack</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <span class="hsocial" data-change="I">
+        <a class="hicon" href="https://github.com/Monzer-Hw" target="_blank" rel="noopener" aria-label="GitHub, Monzer-Hw (opens in a new tab)" title="GitHub"><svg aria-hidden="true"><use href="#i-github"/></svg></a>
+        <a class="hicon" href="https://www.linkedin.com/in/monzer-hweit" target="_blank" rel="noopener" aria-label="LinkedIn, monzer-hweit (opens in a new tab)" title="LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin"/></svg></a>
+      </span>
+      <a class="btn btn-soft btn-sm" href="#" data-toast="On the real site this downloads your CV as a PDF."><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg>Resume</a>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="mnav" aria-label="Open menu" data-change="5"><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+  <nav class="mnav" id="mnav" aria-label="Main" hidden>
+    <div class="wrap">
+      <ul>
+        <li><a href="#projects">Projects<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+        <li><a href="#about">About<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+        <li><a href="#experience">Experience<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+        <li><a href="#stack">Stack<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+        <li><a href="#contact">Contact<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+      </ul>
+      <div class="msocial">
+        <a class="iconlink" href="https://github.com/Monzer-Hw" target="_blank" rel="noopener" aria-label="GitHub, Monzer-Hw (opens in a new tab)"><svg aria-hidden="true"><use href="#i-github"/></svg></a>
+        <a class="iconlink" href="https://www.linkedin.com/in/monzer-hweit" target="_blank" rel="noopener" aria-label="LinkedIn, monzer-hweit (opens in a new tab)"><svg aria-hidden="true"><use href="#i-linkedin"/></svg></a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero" aria-labelledby="name" data-change="J">
+    <canvas class="halftone" id="halftone" aria-hidden="true"></canvas>
+    <div class="wrap hero-grid">
+      <div>
+        <h1 class="name" id="name"><span>Monzer</span><span>Hweit</span></h1>
+        <p class="intro">AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.</p>
+        <div class="ctas">
+          <a class="btn btn-ink" href="#projects">See my work</a>
+          <a class="btn btn-soft" href="#contact" data-change="3">Get in touch<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div>
+
+      <figure class="photo is-placeholder" id="photo" data-change="D">
+        <div class="ini" aria-hidden="true">MH<small>Placeholder until your photo is added</small></div>
+      </figure>
+
+      <ul class="facts" data-change="G">
+        <li><svg class="ic" aria-hidden="true"><use href="#i-pin"/></svg><strong>Düsseldorf area</strong><span>Germany</span></li>
+        <li><svg class="ic" aria-hidden="true"><use href="#i-layers"/></svg><strong>LLMs, RAG, MLOps</strong><span>Plus computer vision and n8n</span></li>
+        <li data-change="7"><i class="live-dot" aria-hidden="true"></i><strong data-content="status.title">Open to work</strong><span data-content="status.detail">Roles and freelance projects</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section band" id="projects" aria-labelledby="work-title">
+    <div class="wrap">
+      <header class="shead" data-change="2">
+        <h2 class="h2" id="work-title">Projects.</h2>
+        <p class="lede">Projects where I owned the design from spec to code, with the decisions that shaped them.</p>
+      </header>
+
+      <div class="rows">
+        <article class="row" id="p-rag">
+          <div class="row-side" data-change="E">
+            <h3>Production RAG pipeline</h3>
+            <p class="when">Built June 2026</p>
+            <button class="media" type="button" data-video="Production RAG pipeline" data-len="2:14" aria-label="Watch the Production RAG pipeline demo, 2 minutes 14 seconds" data-change="1">
+              <span class="art art-rag" aria-hidden="true">
+                <span class="q">Which contracts renew automatically in Q3?</span>
+                <span class="a">Three renew on 1 July unless cancelled 60 days before <b>1</b><b>3</b>. The Nordwerk agreement renews yearly <b>2</b>.</span>
+              </span>
+              <span class="chip" aria-hidden="true"><svg class="ic"><use href="#i-film"/></svg>Demo · 2:14</span>
+              <span class="play" aria-hidden="true"><svg class="ic"><use href="#i-play"/></svg></span>
+            </button>
+            <div class="row-links" data-change="1">
+              <button class="tlink" type="button" data-video="Production RAG pipeline" data-len="2:14"><svg class="ic" aria-hidden="true"><use href="#i-film"/></svg>Watch demo</button>
+              <a class="tlink" href="#" data-toast="Placeholder: links to the live demo of this project."><svg class="ic" aria-hidden="true"><use href="#i-out"/></svg>Try it</a>
+              <a class="tlink" href="https://github.com/Monzer-Hw" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-code"/></svg>Code</a>
+            </div>
+          </div>
+          <div class="row-body">
+            <p>A document Q&amp;A system built from scratch, starting from a full PRD and codebase spec. Ingestion, chunking, storage and retrieval are separate layers, and every external provider sits behind one interface.</p>
+            <ul class="decisions">
+              <li><b>Providers</b><span>Embeddings, vector store and LLM chosen through Factory and Strategy patterns, so switching vendors is a config change.</span></li>
+              <li><b>Config</b><span>Typed Pydantic v2 settings loaded from YAML.</span></li>
+              <li><b>Quality</b><span>src layout, full type hints, mypy strict, Ruff and pre-commit hooks.</span></li>
+            </ul>
+            <p class="tools">Python, Pydantic v2, uv, mypy, Ruff</p>
+          </div>
+        </article>
+
+        <article class="row" id="p-sudoku">
+          <div class="row-side">
+            <h3>Sudoku solver</h3>
+            <p class="when wip">In progress</p>
+            <button class="media" type="button" data-video="Sudoku solver" data-len="1:38" aria-label="Watch the Sudoku solver demo, 1 minute 38 seconds">
+              <span class="art" aria-hidden="true"><span class="sgrid" id="sgrid"></span></span>
+              <span class="chip" aria-hidden="true"><svg class="ic"><use href="#i-film"/></svg>Demo · 1:38</span>
+              <span class="play" aria-hidden="true"><svg class="ic"><use href="#i-play"/></svg></span>
+            </button>
+            <div class="row-links">
+              <button class="tlink" type="button" data-video="Sudoku solver" data-len="1:38"><svg class="ic" aria-hidden="true"><use href="#i-film"/></svg>Watch demo</button>
+              <a class="tlink" href="#" data-toast="Placeholder: links to the live demo of this project."><svg class="ic" aria-hidden="true"><use href="#i-out"/></svg>Try it</a>
+              <a class="tlink" href="https://github.com/Monzer-Hw" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-code"/></svg>Code</a>
+            </div>
+          </div>
+          <div class="row-body">
+            <p>Photograph a puzzle and get it solved. An OpenCV pipeline finds the grid and reads the digits, you confirm or correct what it recognized, and a constraint solver finishes the job.</p>
+            <ul class="decisions">
+              <li><b>Solver</b><span>Constraint propagation with MRV ordering and naked and hidden singles; GAC (Régin) held back until it's needed.</span></li>
+              <li><b>API</b><span>FastAPI with a discriminated-union response, so the frontend handles every outcome explicitly.</span></li>
+              <li><b>UX</b><span>Recognise, confirm, edit, solve. The user stays in control when recognition is unsure.</span></li>
+            </ul>
+            <p class="tools">Python 3.13, FastAPI, OpenCV, Pytest, Docker, React, TypeScript, Vite, Tailwind</p>
+          </div>
+        </article>
+
+        <article class="row" id="p-invoice">
+          <div class="row-side">
+            <h3>Invoice intake automation</h3>
+            <p class="when">Built 2024</p>
+            <button class="media" type="button" data-video="Invoice intake automation" data-len="3:02" aria-label="Watch the Invoice intake automation demo, 3 minutes 2 seconds">
+              <span class="art flow" aria-hidden="true">
+                <span class="node">Inbox<small>PDF</small></span><span class="edge"></span>
+                <span class="node">Extract<small>LLM</small></span><span class="edge"></span>
+                <span class="node">Check<small>vs. PO</small></span><span class="edge"></span>
+                <span class="node">ERP<small>posted</small></span>
+              </span>
+              <span class="chip" aria-hidden="true"><svg class="ic"><use href="#i-film"/></svg>Demo · 3:02</span>
+              <span class="play" aria-hidden="true"><svg class="ic"><use href="#i-play"/></svg></span>
+            </button>
+            <div class="row-links">
+              <button class="tlink" type="button" data-video="Invoice intake automation" data-len="3:02"><svg class="ic" aria-hidden="true"><use href="#i-film"/></svg>Watch demo</button>
+              <a class="tlink" href="#" data-toast="Placeholder: links to the live demo of this project."><svg class="ic" aria-hidden="true"><use href="#i-out"/></svg>Try it</a>
+              <a class="tlink" href="https://github.com/Monzer-Hw" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-code"/></svg>Code</a>
+            </div>
+          </div>
+          <div class="row-body">
+            <p>An n8n workflow that picks up supplier invoices from a shared inbox, extracts the fields with an LLM, checks them against purchase orders and posts clean records to the ERP. Anything uncertain lands in a review queue instead of being guessed.</p>
+            <ul class="decisions">
+              <li><b>Extraction</b><span>Structured output validated against a schema, with one retry before a human sees it.</span></li>
+              <li><b>Safety</b><span>Confidence threshold per field, so a wrong amount never posts silently.</span></li>
+              <li><b>Result</b><span>Around 25 hours of manual entry removed per week.</span></li>
+            </ul>
+            <p class="tools">n8n, Python, Pydantic, PostgreSQL</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about" aria-labelledby="about-title">
+    <div class="wrap split">
+      <header>
+        <h2 class="h2" id="about-title">About.</h2>
+      </header>
+      <div>
+        <p class="statement">I build AI systems that companies can actually run: retrieval over messy documents, LLM services with clear contracts, and automations that save people real hours.</p>
+        <div class="bio" data-change="F">
+          <p>I started in data science, training text classifiers for customer support teams. Once large language models arrived, the hard part moved from the model to everything around it: getting clean data in, retrieving the right context, and knowing whether an answer is good. That's the work I enjoy most.</p>
+          <p>Today I work as an AI engineer on document intelligence and internal assistants. I write the spec before the code, keep services typed and tested, and design provider-agnostic interfaces so a new model is a config change, not a rewrite.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band" id="experience" aria-labelledby="exp-title">
+    <div class="wrap">
+      <header class="shead">
+        <h2 class="h2" id="exp-title">Experience.</h2>
+        <p class="lede">Where I've worked and what changed because of it.</p>
+      </header>
+      <ol class="jobs" reversed>
+        <li class="job">
+          <div class="job-when">
+            <time datetime="2025-03">Mar 2025 – now</time>
+            <span>Düsseldorf, hybrid</span>
+            <span class="current">Current role</span>
+          </div>
+          <div>
+            <h3>AI Engineer</h3>
+            <p class="org">Nordwerk Analytics GmbH</p>
+            <p class="summary">Lead engineer on the internal document assistant, used by legal and procurement teams to search and question 40,000 contracts.</p>
+            <ul class="outcomes">
+              <li>Designed the retrieval pipeline: hybrid search, reranking and cited answers. Contract lookups dropped from about 20 minutes to under one.</li>
+              <li>Built an evaluation harness with a 300-question golden set, so every prompt or model change ships with a measured score.</li>
+            </ul>
+            <p class="tools">Python, FastAPI, pgvector, Docker, GitHub Actions</p>
+          </div>
+        </li>
+        <li class="job">
+          <div class="job-when">
+            <time datetime="2024-04">Apr 2024 – Feb 2025</time>
+            <span>Duisburg, on site</span>
+          </div>
+          <div>
+            <h3>Machine Learning Engineer, working student</h3>
+            <p class="org">Ostkai Logistics AG</p>
+            <p class="summary">Part of a three-person automation team digitizing warehouse and back-office processes.</p>
+            <ul class="outcomes">
+              <li>Shipped an OpenCV and CNN pipeline that flags damaged parcels at the inbound dock, catching 87% of cases manual checks used to miss.</li>
+              <li>Automated invoice intake with n8n and an LLM extraction step, removing around 25 hours of manual data entry per week.</li>
+            </ul>
+            <p class="tools">Python, OpenCV, PyTorch, ONNX, n8n</p>
+          </div>
+        </li>
+        <li class="job">
+          <div class="job-when">
+            <time datetime="2023-09">Sep 2023 – Mar 2024</time>
+            <span>Cologne, remote</span>
+          </div>
+          <div>
+            <h3>Data Science Intern</h3>
+            <p class="org">Lumen Health Tech</p>
+            <p class="summary">Worked with the support team on routing incoming tickets automatically.</p>
+            <ul class="outcomes">
+              <li>Trained a ticket classifier across 14 categories and served it behind a small FastAPI service, cutting first-response routing time by a third.</li>
+            </ul>
+            <p class="tools">Python, scikit-learn, Hugging Face Transformers, FastAPI</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="stack" aria-labelledby="stack-title">
+    <div class="wrap">
+      <header class="shead">
+        <h2 class="h2" id="stack-title">Stack.</h2>
+        <p class="lede">What I reach for, grouped by the problem it solves.</p>
+      </header>
+      <dl class="stack">
+        <div><dt>Language models and retrieval</dt><dd>RAG pipelines, chunking strategies, multi-provider embeddings and vector stores, NLP, GraphRAG <span class="tag" data-change="6">exploring</span><span class="used" data-change="H">Used in <a href="#p-rag">Production RAG pipeline</a>, <a href="#p-invoice">Invoice intake automation</a></span></dd></div>
+        <div><dt>Computer vision</dt><dd>OpenCV pipelines, digit recognition, CNN training and ONNX export <span class="tag">in progress</span><span class="used">Used in <a href="#p-sudoku">Sudoku solver</a></span></dd></div>
+        <div><dt>Backend and APIs</dt><dd>Python 3.13, FastAPI, Pydantic v2, Docker<span class="used">Used in <a href="#p-rag">Production RAG pipeline</a>, <a href="#p-sudoku">Sudoku solver</a></span></dd></div>
+        <div><dt>Automation</dt><dd>n8n workflows and integrations<span class="used">Used in <a href="#p-invoice">Invoice intake automation</a></span></dd></div>
+        <div><dt>Quality and tooling</dt><dd>uv, Ruff, mypy strict, Pytest, pre-commit, Just<span class="used">Used in <a href="#p-rag">Production RAG pipeline</a>, <a href="#p-sudoku">Sudoku solver</a></span></dd></div>
+        <div><dt>Frontend, when needed</dt><dd>TypeScript, React, Vite, Tailwind, Zod, Vitest<span class="used">Used in <a href="#p-sudoku">Sudoku solver</a></span></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section band" id="contact" aria-labelledby="contact-title">
+    <div class="wrap contact-grid">
+      <header>
+        <h2 class="h2" id="contact-title">Let's talk.</h2>
+        <p class="lede" data-change="7"><span data-content="status.sentence">I'm open to new roles and freelance projects.</span> Send a message and I'll get back to you.</p>
+        <div class="direct">
+          <div><span>Prefer email?</span><span class="copy"><b id="email">hello@example.com</b><button type="button" id="copy-email">Copy</button></span></div>
+          <div><span>Based in</span><b>Düsseldorf area, Germany</b></div>
+        </div>
+      </header>
+
+      <div class="cside">
+        <div class="form">
+          <form class="form-body" id="cform" novalidate>
+            <div class="fgrid">
+              <div class="field">
+                <label for="f-name">Name</label>
+                <input id="f-name" name="name" autocomplete="name" placeholder="Jane Doe" aria-describedby="e-name">
+                <p class="err" id="e-name"></p>
+              </div>
+              <div class="field">
+                <label for="f-email">Email</label>
+                <input id="f-email" name="email" type="email" autocomplete="email" placeholder="jane@company.com" aria-describedby="e-email">
+                <p class="err" id="e-email"></p>
+              </div>
+              <div class="field full">
+                <label for="f-msg">Message</label>
+                <textarea id="f-msg" name="message" maxlength="2000" placeholder="What are you working on, and how can I help?" aria-describedby="e-msg c-msg"></textarea>
+                <p class="err" id="e-msg"></p>
+                <p class="count" id="c-msg">0 / 2000</p>
+              </div>
+              <label class="consent">
+                <input type="checkbox" id="f-consent" name="consent" aria-describedby="e-consent">
+                <span>I agree that my details are used to answer this message, as described in the <a href="#" data-toast="Placeholder: links to the privacy policy page.">privacy policy</a>.</span>
+                <p class="err" id="e-consent"></p>
+              </label>
+            </div>
+            <div class="ffoot">
+              <p>I usually reply within a few days.</p>
+              <button class="btn btn-ink" type="submit" id="f-send">Send message</button>
+            </div>
+          </form>
+
+          <div class="success" id="csuccess" hidden>
+            <div class="mark" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></div>
+            <h3 tabindex="-1" id="s-title">Message sent.</h3>
+            <p id="s-text">Thanks. I'll reply to your email as soon as I can.</p>
+            <button class="btn btn-soft" type="button" id="s-again">Send another message</button>
+          </div>
+        </div>
+        <div class="elsewhere" data-change="C">
+          <p>Or find me on</p>
+          <ul>
+            <li><a class="iconlink" href="https://github.com/Monzer-Hw" target="_blank" rel="noopener" aria-label="GitHub, Monzer-Hw (opens in a new tab)" title="GitHub"><svg aria-hidden="true"><use href="#i-github"/></svg></a></li>
+            <li><a class="iconlink" href="https://www.linkedin.com/in/monzer-hweit" target="_blank" rel="noopener" aria-label="LinkedIn, monzer-hweit (opens in a new tab)" title="LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin"/></svg></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-bottom">
+      <p>© 2026 Monzer Hweit</p>
+      <ul>
+        <li><a href="#" data-toast="Placeholder: links to the Impressum page.">Impressum</a></li>
+        <li><a href="#" data-toast="Placeholder: links to the privacy policy page.">Datenschutz</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<dialog class="vdlg" id="vdlg" aria-labelledby="v-title">
+  <div class="vstage">
+    <div class="msg">
+      <b id="v-title">Demo video</b>
+      <p>Your recorded demo plays here. It loads only after this click, so no video host sees visitors who never press play.</p>
+    </div>
+    <button class="vclose" type="button" id="v-close" aria-label="Close video"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div class="vbar"><span>0:00</span><span class="track"><i id="v-prog"></i></span><span id="v-len">0:00</span></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<div class="cpanel">
+  <div class="clist" id="clist" hidden>
+    <h2>What changed</h2>
+    <p class="sub">Select a change to jump to it. Hollow markers aren't tied to one spot on the page.</p>
+    <div id="citems"></div>
+  </div>
+  <button class="cbtn" id="cbtn" type="button" aria-expanded="false" aria-controls="clist">Show changes <b id="ccount"></b></button>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Change 7: the availability status lives in one place (a content file in the real site) */
+  const CONTENT = {
+    status: { title: 'Open to work', detail: 'Roles and freelance projects', sentence: "I'm open to new roles and freelance projects." },
+  };
+  document.querySelectorAll('[data-content]').forEach(el => {
+    const v = el.dataset.content.split('.').reduce((o, k) => o && o[k], CONTENT);
+    if (typeof v === 'string') el.textContent = v;
+  });
+
+  /* Toast */
+  const toast = document.getElementById('toast'); let tt;
+  function say(msg){ toast.textContent = msg; toast.hidden = false; clearTimeout(tt); tt = setTimeout(() => toast.hidden = true, 2600); }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-toast]');
+    if (t){ e.preventDefault(); say(t.dataset.toast); }
+  });
+
+  /* Header border on scroll */
+  const header = document.querySelector('.site-header');
+  const onScroll = () => header.classList.toggle('is-scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  /* Change 5: mobile menu */
+  const mbtn = document.getElementById('menu-btn'), mnav = document.getElementById('mnav');
+  function setMenu(open){
+    mnav.hidden = !open; mbtn.setAttribute('aria-expanded', String(open));
+    mbtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    mbtn.querySelector('use').setAttribute('href', open ? '#i-x' : '#i-menu');
+  }
+  mbtn.addEventListener('click', () => setMenu(mnav.hidden));
+  mnav.addEventListener('click', e => { if (e.target.closest('a[href^="#"]')) setMenu(false); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !mnav.hidden){ setMenu(false); mbtn.focus(); } });
+
+  /* Photo: set PHOTO to the image path once it exists; the placeholder card then disappears */
+  const PHOTO = '';
+  const photo = document.getElementById('photo');
+  if (PHOTO){
+    photo.classList.remove('is-placeholder');
+    photo.insertAdjacentHTML('afterbegin', `<img src="${PHOTO}" alt="Portrait of Monzer Hweit">`);
+  }
+
+  /* Halftone ring behind the whole hero: draws in once (the loop comes later), then stays static */
+  const cv = document.getElementById('halftone');
+  const ctx = cv.getContext('2d');
+  let dots = [], W = 0, H = 0, raf = 0;
+  function build(){
+    const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const step = W < 700 ? 7 : 8;
+    const wide = W >= 900;
+    const cx = W * (wide ? .36 : .5), cy = H * (wide ? .5 : .3);
+    const R = wide ? Math.min(W * .27, H * .5) : W * .44, w = R * .24;
+    dots = [];
+    for (let y = step/2; y < H; y += step){
+      for (let x = step/2; x < W; x += step){
+        const dx = x - cx, dy = (y - cy) * 1.08, d = Math.hypot(dx, dy);
+        const band = Math.exp(-(((d - R) / w) ** 2));
+        if (band < .04) continue;
+        const a = Math.atan2(dy, dx);
+        const shade = .25 + .75 * (.5 + .5 * Math.cos(a - 0.5));
+        dots.push({x, y, r: band * shade * step * .52, t: (a + Math.PI) / (2 * Math.PI)});
+      }
+    }
+  }
+  function draw(p){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle = 'rgba(0,0,0,.22)';
+    ctx.beginPath();
+    for (const d of dots){
+      const k = Math.min(1, Math.max(0, (p * 1.35 - d.t * .35)));
+      const rr = d.r * (1 - Math.pow(1 - k, 3));
+      if (rr < .25) continue;
+      ctx.moveTo(d.x + rr, d.y); ctx.arc(d.x, d.y, rr, 0, Math.PI * 2);
+    }
+    ctx.fill();
+  }
+  function intro(){
+    cancelAnimationFrame(raf);
+    if (reduce){ draw(1); return; }
+    const t0 = performance.now(), dur = 1600;
+    const tick = now => { const p = Math.min(1, (now - t0) / dur); draw(p); if (p < 1) raf = requestAnimationFrame(tick); };
+    raf = requestAnimationFrame(tick);
+  }
+  build(); intro();
+  if (document.fonts) document.fonts.ready.then(() => { build(); draw(1); });
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); draw(1); }, 120); });
+
+  /* Sudoku poster */
+  const given = '53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79';
+  const solved = '534678912672195348198342567859761423426853791713924856961537284287419635345286179';
+  document.getElementById('sgrid').innerHTML = [...solved].map((c, i) => given[i] === '.' ? (i % 7 === 0 ? `<i class="g">${c}</i>` : '<i></i>') : `<i>${c}</i>`).join('');
+
+  /* Change 1: demo video dialog (click-to-load) */
+  const dlg = document.getElementById('vdlg'), prog = document.getElementById('v-prog'); let pr;
+  document.querySelectorAll('[data-video]').forEach(b => b.addEventListener('click', () => {
+    document.getElementById('v-title').textContent = `${b.dataset.video}: demo video`;
+    document.getElementById('v-len').textContent = b.dataset.len;
+    prog.style.width = '0';
+    dlg.showModal();
+    if (!reduce){ let w = 0; cancelAnimationFrame(pr); const step = () => { w = Math.min(100, w + .08); prog.style.width = w + '%'; if (w < 100 && dlg.open) pr = requestAnimationFrame(step); }; pr = requestAnimationFrame(step); }
+  }));
+  document.getElementById('v-close').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', () => cancelAnimationFrame(pr));
+
+  /* Copy email */
+  document.getElementById('copy-email').addEventListener('click', async () => {
+    const text = document.getElementById('email').textContent;
+    try { await navigator.clipboard.writeText(text); say('Email address copied.'); }
+    catch { const r = document.createRange(); r.selectNodeContents(document.getElementById('email')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); say('Press Ctrl+C to copy the selected address.'); }
+  });
+
+  /* Contact form (design only: no message is sent from this preview) */
+  const form = document.getElementById('cform'), ok = document.getElementById('csuccess');
+  const f = {name:form.querySelector('#f-name'), email:form.querySelector('#f-email'), msg:form.querySelector('#f-msg'), consent:form.querySelector('#f-consent')};
+  const count = document.getElementById('c-msg');
+  f.msg.addEventListener('input', () => count.textContent = `${f.msg.value.length} / 2000`);
+  const rules = {
+    name: () => f.name.value.trim() ? '' : 'Enter your name.',
+    email: () => !f.email.value.trim() ? 'Enter your email address.' : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.value.trim()) ? '' : 'Enter an email address like jane@company.com.',
+    msg: () => f.msg.value.trim().length >= 10 ? '' : 'Write a message of at least 10 characters.',
+    consent: () => f.consent.checked ? '' : 'Tick the box so I can use your details to reply.',
+  };
+  const errId = {name:'e-name', email:'e-email', msg:'e-msg', consent:'e-consent'};
+  function check(k){
+    const m = rules[k]();
+    document.getElementById(errId[k]).textContent = m;
+    f[k].setAttribute('aria-invalid', m ? 'true' : 'false');
+    return !m;
+  }
+  Object.keys(f).forEach(k => f[k].addEventListener(k === 'consent' ? 'change' : 'blur', () => { if (f[k].getAttribute('aria-invalid')) check(k); }));
+  Object.keys(f).forEach(k => f[k].addEventListener('input', () => { if (f[k].getAttribute('aria-invalid') === 'true') check(k); }));
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const bad = Object.keys(f).filter(k => !check(k));
+    if (bad.length){ f[bad[0]].focus(); return; }
+    const btn = document.getElementById('f-send');
+    btn.classList.add('is-loading'); btn.textContent = 'Sending…';
+    await new Promise(r => setTimeout(r, 900));
+    const first = f.name.value.trim().split(' ')[0];
+    document.getElementById('s-text').textContent = `Thanks, ${first}. This is a preview, so nothing was sent. On the real site this message goes to your inbox.`;
+    form.hidden = true; ok.hidden = false; document.getElementById('s-title').focus();
+    btn.classList.remove('is-loading'); btn.textContent = 'Send message';
+  });
+  document.getElementById('s-again').addEventListener('click', () => {
+    form.reset(); count.textContent = '0 / 2000';
+    Object.keys(f).forEach(k => f[k].removeAttribute('aria-invalid'));
+    ok.hidden = true; form.hidden = false; f.name.focus();
+  });
+
+  /* Changes panel */
+  const GROUPS = [
+    ['First review suggestions', [
+      {n:'1', t:'Demo video and links on every project', d:'Video still with a play button, plus Watch demo · Try it · Code. The video loads only after a click.'},
+      {n:'2', t:'Projects moved up', d:'Projects come right after the hero, and the menu order matches.'},
+      {n:'3', t:'"Get in touch" opens the form', d:'The hero button jumps to the contact form instead of starting an email.'},
+      {n:'4', t:'Font hosted on your own site', d:'Not visible. In the real site Next.js serves Host Grotesk itself, so Google never sees visitors. This preview still loads it from Google.', off:true},
+      {n:'5', t:'Menu on phones', d:'A menu button replaces the hidden links below 820px wide. Make the window narrow to see it.', miss:'The menu button appears when the window is narrower than 820px.'},
+      {n:'6', t:'Readable greys only', d:'The lightest grey is decoration only. "exploring" became a tag and the counter uses a darker grey.'},
+      {n:'7', t:'One availability status', d:'"Open to work: roles and freelance projects" comes from one place and appears in the hero and contact section.'},
+      {n:'8', t:'Strictly monochrome', d:'Black, white and grey. Green marks only "live", blue only keyboard focus (and this preview\'s markers).', off:true},
+      {n:'10', t:'Light only for v1', d:'No half-finished dark mode. The page stays light in every system theme.', off:true},
+    ]],
+    ['Your edits', [
+      {n:'A', t:'Squared buttons', d:'Buttons, inputs and small controls use 8px corners instead of pills.', off:true, miss:'Every button on the page has squared corners.'},
+      {n:'B', t:'"Now building" removed', d:'Replaces suggestion 9.', off:true},
+      {n:'C', t:'GitHub and LinkedIn under the form', d:'Centered icons below the contact form. The footer is now one line with copyright and legal links.'},
+      {n:'D', t:'Photo card as a placeholder', d:'The grey MH card holds the spot until your photo is added. Then the card disappears and the photo shows in grayscale without it.'},
+      {n:'J', t:'Halftone ring behind the whole hero', d:'One large ring spans the hero behind the name and the photo, like your reference. Static for now; the loop comes later.'},
+    ]],
+    ['Second review fixes', [
+      {n:'E', t:'Project media in the left column', d:'Title, video and links sit on the left and stay in view while you read; the story is on the right. Each project is about a third shorter.'},
+      {n:'F', t:'Shorter content', d:'About has two paragraphs, and the first job lists two results instead of three.'},
+      {n:'G', t:'Facts across the full width', d:'The three hero facts span the whole width, so each fits on two lines.'},
+      {n:'H', t:'Stack links to projects', d:'Each stack group says which projects use it, with links.'},
+      {n:'I', t:'GitHub and LinkedIn in the header', d:'Next to Resume, visible while scrolling. On phones they are inside the menu.', miss:'On narrow screens these icons are inside the menu.'},
+    ]],
+  ];
+  const ALL = GROUPS.flatMap(g => g[1]);
+  document.getElementById('ccount').textContent = ALL.length;
+  document.getElementById('citems').innerHTML = GROUPS.map(([title, items]) =>
+    `<h3>${title}</h3><ol>` + items.map(c => `<li><button type="button" data-goto="${c.n}"><i class="n${c.off ? ' off' : ''}">${c.n}</i><strong>${c.t}</strong><span>${c.d}</span></button></li>`).join('') + '</ol>'
+  ).join('');
+  const clist = document.getElementById('clist'), cbtn = document.getElementById('cbtn');
+  cbtn.addEventListener('click', () => {
+    const open = clist.hidden;
+    clist.hidden = !open; cbtn.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('show-changes', open);
+    cbtn.firstChild.textContent = open ? 'Hide changes ' : 'Show changes ';
+  });
+  clist.addEventListener('click', e => {
+    const b = e.target.closest('[data-goto]'); if (!b) return;
+    const item = ALL.find(c => c.n === b.dataset.goto);
+    const el = [...document.querySelectorAll(`[data-change="${item.n}"]`)].find(x => x.offsetParent !== null);
+    if (!el){ say(item.miss || 'This change has no single spot on the page.'); return; }
+    el.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'center'});
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  });
+})();
+</script>
+</body>
+</html>
