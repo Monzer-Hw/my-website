@@ -10,8 +10,8 @@ I have built, and how to reach me.
 A professional personal website that shows who I am, my projects, my
 experience and my tech stack. Each project is shown with a demo
 video, a link to try it, and a link to its code on GitHub where
-available. Visitors can contact me through a contact form that sends
-their message to my email.
+available. Visitors can download my CV and contact me through a
+contact form that sends their message to my email.
 
 It has worked when:
 - The site is live and I am proud to share the link
@@ -28,9 +28,9 @@ It has worked when:
 ## Constraints
 - First version only. A blog, a German version and an AI assistant
   are separate, later intents.
-- My real projects are not ready yet. The site is built and its
-  design checked with placeholder projects; real ones replace them
-  later.
+- My real projects are not ready yet. Placeholder projects are used
+  only to build and check the design; the site is not shared publicly
+  until real projects replace them.
 - Hosted on Vercel, with my own domain (not bought yet)
 - English only for now
 - I live in Germany, so German legal rules for websites apply
@@ -38,6 +38,5 @@ It has worked when:
   personal data, so the privacy policy must cover it.
 
 ## Open questions
-- Should my CV be downloadable?
 - Where are the demo videos hosted?
 - What visual style should the site have?
