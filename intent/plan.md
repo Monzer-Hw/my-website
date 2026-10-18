@@ -56,6 +56,15 @@ stand-in stills), `components/contact/CopyButton.tsx`, `lib/dates.ts`
 and dark `poster` color tokens for the stills. The halftone ring's fade
 starts at 64% of the hero height so the facts row stays readable.
 
+Deviations recorded in phase 5: `components/media/ProjectVideo.tsx` joins
+the still, the "Watch demo" link and the dialog. The still is a picture
+with a transparent play button over it (no visible text of its own), so
+the button's name cannot conflict with the still's drawn text (WCAG
+2.5.3). A missing video file shows a message instead of a broken player;
+until phase 10 adds the files, opening a video logs 404s for the `.mp4`
+and `.vtt` placeholders. Added `lib/duration.ts` ("2:14" → "2 minutes 14
+seconds" for screen readers) and the player labels in `content/sections.ts`.
+
 ## 2. Files
 New project at the repo root; `intent/` stays as is.
 
@@ -79,7 +88,7 @@ New project at the repo root; `intent/` stays as is.
 | `lib/cn.ts` | Class name helper |
 | `components/hero/HalftoneRing.tsx` | Client canvas ring: loop, pause off-screen and in hidden tabs, reduced motion |
 | `components/hero/Photo.tsx` | Placeholder card until a photo exists; photo without card after |
-| `components/media/VideoPoster.tsx`, `VideoDialog.tsx` | Poster and click-to-load `<video>` with captions in a `<dialog>` |
+| `components/media/VideoPoster.tsx`, `VideoDialog.tsx`, `ProjectVideo.tsx` | Poster and click-to-load `<video>` with captions in a `<dialog>`; `ProjectVideo` wires the still and "Watch demo" to it |
 | `components/contact/ContactForm.tsx` | Client form: field validation, counter, consent, honeypot, success and error states |
 | `content/schema.ts` | Zod schemas: site, profile, status, projects (≤3 decisions), experience (≤3 results), stack (usedIn → project ids) |
 | `content/*.ts` | `profile`, `status`, `projects`, `experience`, `stack`; entries flagged `placeholder: true` |

@@ -1,5 +1,6 @@
 // Drawn stand-in stills for projects without a real poster image (design reference).
 // Each one shows the project's own subject: a cited answer, a solved grid, a workflow.
+// Spans only: the still sits inside a <button>, which allows phrasing content alone.
 
 const GIVEN = "53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79";
 const SOLVED = "534678912672195348198342567859761423426853791713924856961537284287419635345286179";
@@ -12,15 +13,15 @@ export function PosterArt({ kind }: { kind: "rag" | "sudoku" | "flow" }) {
 
 function RagArt() {
   return (
-    <div className="absolute inset-0 flex flex-col justify-center gap-2 px-[8%] pt-[6%] pb-[18%] text-[0.625rem] leading-[1.45]">
-      <p className="max-w-[80%] self-end rounded-[10px_10px_2px_10px] bg-poster-line px-2.5 py-1.5 text-poster-text">
+    <span className="absolute inset-0 flex flex-col justify-center gap-2 px-[8%] pt-[6%] pb-[18%] text-[0.625rem] leading-[1.45]">
+      <span className="block max-w-[80%] self-end rounded-[10px_10px_2px_10px] bg-poster-line px-2.5 py-1.5 text-poster-text">
         Which contracts renew automatically in Q3?
-      </p>
-      <p className="max-w-[86%] rounded-[10px_10px_10px_2px] bg-poster-2 px-2.5 py-2 text-poster-ink">
+      </span>
+      <span className="block max-w-[86%] rounded-[10px_10px_10px_2px] bg-poster-2 px-2.5 py-2 text-poster-ink">
         Three renew on 1 July unless cancelled 60 days before <Cite n={1} />
         <Cite n={3} />. The supplier agreement renews yearly <Cite n={2} />.
-      </p>
-    </div>
+      </span>
+    </span>
   );
 }
 
@@ -32,8 +33,8 @@ function Cite({ n }: { n: number }) {
 
 function SudokuArt() {
   return (
-    <div className="absolute inset-0 grid place-items-center pb-[4%]">
-      <div className="grid aspect-square w-[min(34%,200px)] grid-cols-9 border-2 border-poster-ink bg-poster-2">
+    <span className="absolute inset-0 grid place-items-center pb-[4%]">
+      <span className="grid aspect-square w-[min(34%,200px)] grid-cols-9 border-2 border-poster-ink bg-poster-2">
         {[...SOLVED].map((digit, i) => {
           const row = Math.floor(i / 9);
           const col = i % 9;
@@ -53,8 +54,8 @@ function SudokuArt() {
             </span>
           );
         })}
-      </div>
-    </div>
+      </span>
+    </span>
   );
 }
 
@@ -66,16 +67,16 @@ function FlowArt() {
     ["ERP", "posted"],
   ];
   return (
-    <div className="absolute inset-0 flex items-center justify-center gap-1.5 px-[5%] pb-[10%]">
+    <span className="absolute inset-0 flex items-center justify-center gap-1.5 px-[5%] pb-[10%]">
       {nodes.map(([label, note], i) => (
-        <div key={label} className="contents">
+        <span key={label} className="contents">
           {i > 0 && <span className="h-px max-w-4 min-w-1.5 flex-1 bg-poster-ink" />}
           <span className="rounded-[8px] bg-poster-2 px-2 py-1.5 text-[0.625rem] leading-[1.3] whitespace-nowrap text-poster-text shadow-[inset_0_0_0_1px_var(--color-poster-line)]">
             {label}
             <small className="block text-[0.9em] text-poster-ink">{note}</small>
           </span>
-        </div>
+        </span>
       ))}
-    </div>
+    </span>
   );
 }

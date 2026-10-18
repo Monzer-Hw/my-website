@@ -42,7 +42,10 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
   `SectionHeading`)
 - `components/hero/`: `HalftoneRing` (canvas), `Photo` (placeholder card
   until `profile.photo` is set)
-- `components/media/`: `VideoPoster`, `PosterArt` (drawn stand-in stills)
+- `components/media/`: `ProjectVideo` (still + "Watch demo", opens the
+  player), `VideoDialog` (native `<dialog>`; the `<video>` exists only
+  while open, so nothing loads before play), `VideoPoster`, `PosterArt`
+  (drawn stand-in stills; spans only, they sit beside a button)
 - `components/contact/`: `ContactForm` (validation; sending in phase 7),
   `CopyButton`
 - `content/`: all site text and data (see Content below)

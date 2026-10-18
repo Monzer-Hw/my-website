@@ -11,6 +11,9 @@ export const sections: Sections = {
     demo: "Watch demo",
     live: "Try it",
     code: "Code",
+    videoTitle: "demo video",
+    videoClose: "Close video",
+    videoUnavailable: "This demo video isn't available yet. Check back soon, or look at the code on GitHub.",
   },
   about: { title: "About." },
   experience: {
