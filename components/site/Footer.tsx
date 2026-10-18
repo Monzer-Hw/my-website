@@ -1,4 +1,5 @@
 import { cacheLife } from "next/cache";
+import Link from "next/link";
 import { site } from "@/content/site";
 
 // cacheComponents forbids new Date() in the prerendered shell, so the year is
@@ -20,9 +21,9 @@ export function Footer() {
           <ul className="flex list-none gap-5">
             {site.legal.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className="no-underline transition-colors duration-200 hover:text-ink">
+                <Link href={item.href} className="no-underline transition-colors duration-200 hover:text-ink">
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

@@ -8,6 +8,7 @@ export function findPlaceholders(content: Content): string[] {
   for (const p of content.projects) if (p.placeholder) found.push(`projects: ${p.title}`);
   for (const j of content.experience) if (j.placeholder) found.push(`experience: ${j.role} at ${j.org}`);
   for (const g of content.stack) if (g.placeholder) found.push(`stack: ${g.title}`);
+  for (const page of Object.values(content.legal)) if (page.placeholder) found.push(`legal: ${page.title}`);
   return found;
 }
 

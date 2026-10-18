@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { site } from "@/content/site";
@@ -9,8 +10,8 @@ export function Header() {
   return (
     <HeaderShell>
       <div className="wrap flex h-header items-center gap-4 desk:gap-8">
-        <a
-          href="#top"
+        <Link
+          href="/"
           className="inline-flex items-center gap-2.5 whitespace-nowrap text-[1.0625rem] font-semibold tracking-[-0.01em] text-ink no-underline"
         >
           <span
@@ -20,8 +21,8 @@ export function Header() {
             {site.initials}
           </span>
           {site.name}
-          <span className="sr-only">, back to top</span>
-        </a>
+          <span className="sr-only">, home page</span>
+        </Link>
 
         <nav aria-label="Main" className="mx-auto hidden desk:block">
           <ul className="flex list-none gap-0.5">

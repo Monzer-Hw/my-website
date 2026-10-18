@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Host_Grotesk } from "next/font/google";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { content } from "@/content";
+import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const hostGrotesk = Host_Grotesk({
@@ -10,10 +12,24 @@ const hostGrotesk = Host_Grotesk({
   variable: "--font-host-grotesk",
 });
 
+const { name, role, description } = content.site;
+
+// Link previews and search results (spec 3.9). The preview image is app/opengraph-image.tsx.
 export const metadata: Metadata = {
-  title: "Monzer Hweit – AI Engineer",
-  description:
-    "AI engineer building retrieval systems, LLM pipelines and automations.",
+  metadataBase: siteUrl(),
+  title: { default: `${name} – ${role}`, template: `%s – ${name}` },
+  description,
+  authors: [{ name }],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: name,
+    title: `${name} – ${role}`,
+    description,
+    locale: "en_US",
+    url: "/",
+  },
+  twitter: { card: "summary_large_image", title: `${name} – ${role}`, description },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

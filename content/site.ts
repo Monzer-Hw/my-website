@@ -3,13 +3,17 @@
 export const site = {
   name: "Monzer Hweit",
   initials: "MH",
+  role: "AI Engineer",
+  /** Search results and link previews (spec 3.9). */
+  description:
+    "AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.",
   cvPath: "/cv/Monzer-Hweit-CV.pdf",
   nav: [
-    { label: "Projects", href: "#projects" },
-    { label: "About", href: "#about" },
-    { label: "Experience", href: "#experience" },
-    { label: "Stack", href: "#stack" },
-    { label: "Contact", href: "#contact" },
+    { label: "Projects", href: "/#projects" },
+    { label: "About", href: "/#about" },
+    { label: "Experience", href: "/#experience" },
+    { label: "Stack", href: "/#stack" },
+    { label: "Contact", href: "/#contact" },
   ],
   social: [
     { network: "github", label: "GitHub", handle: "Monzer-Hw", href: "https://github.com/Monzer-Hw" },

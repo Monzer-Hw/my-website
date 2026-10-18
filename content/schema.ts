@@ -14,8 +14,11 @@ const projectId = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Use lowercase-ke
 export const siteSchema = z.object({
   name: text,
   initials: z.string().regex(/^[A-Z]{2,3}$/),
+  role: text,
+  description: text.max(160), // longer descriptions get cut off in search results
   cvPath: sitePath,
-  nav: z.array(z.object({ label: text, href: z.string().regex(/^#[a-z]+$/) })).min(1),
+  // Absolute ("/#section") so the header works from every page, not only the home page.
+  nav: z.array(z.object({ label: text, href: z.string().regex(/^\/#[a-z]+$/) })).min(1),
   social: z.array(
     z.object({ network: z.enum(["github", "linkedin"]), label: text, handle: text, href: z.url() }),
   ),
@@ -103,6 +106,7 @@ export const sectionsSchema = z.object({
     videoUnavailable: text,
   }),
   about: z.object({ title: text }),
+  notFound: z.object({ title: text, body: text, home: text }),
   experience: z.object({ title: text, lede: text, current: text, present: text }),
   stack: z.object({ title: text, lede: text, usedIn: text }),
   contact: z.object({
@@ -131,10 +135,18 @@ export const sectionsSchema = z.object({
   }),
 });
 
+/** A legal page (spec 3.10), written in German. Texts come from a generator before launch. */
+export const legalPageSchema = z.object({
+  placeholder,
+  title: text,
+  sections: z.array(z.object({ heading: text, paragraphs: z.array(text).min(1) })).min(1),
+});
+
 export const contentSchema = z
   .object({
     site: siteSchema,
     sections: sectionsSchema,
+    legal: z.object({ impressum: legalPageSchema, datenschutz: legalPageSchema }),
     profile: profileSchema,
     status: statusSchema,
     projects: z.array(projectSchema).min(1),
@@ -164,6 +176,7 @@ export const contentSchema = z
 
 export type Content = z.infer<typeof contentSchema>;
 export type Sections = z.input<typeof sectionsSchema>;
+export type LegalPage = z.input<typeof legalPageSchema>;
 export type Profile = z.input<typeof profileSchema>;
 export type Status = z.input<typeof statusSchema>;
 export type Project = z.input<typeof projectSchema>;

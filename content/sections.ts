@@ -16,6 +16,11 @@ export const sections: Sections = {
     videoUnavailable: "This demo video isn't available yet. Check back soon, or look at the code on GitHub.",
   },
   about: { title: "About." },
+  notFound: {
+    title: "Page not found.",
+    body: "This page doesn't exist or has moved. Everything on this site is on the home page.",
+    home: "Go to the home page",
+  },
   experience: {
     title: "Experience.",
     lede: "Where I've worked and what changed because of it.",
