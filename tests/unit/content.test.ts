@@ -3,11 +3,12 @@ import { experience } from "@/content/experience";
 import { profile } from "@/content/profile";
 import { projects } from "@/content/projects";
 import { contentSchema } from "@/content/schema";
+import { sections } from "@/content/sections";
 import { site } from "@/content/site";
 import { stack } from "@/content/stack";
 import { status } from "@/content/status";
 
-const raw = () => structuredClone({ site, profile, status, projects, experience, stack });
+const raw = () => structuredClone({ site, sections, profile, status, projects, experience, stack });
 
 function issues(input: unknown): string[] {
   const result = contentSchema.safeParse(input);
