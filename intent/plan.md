@@ -65,6 +65,22 @@ until phase 10 adds the files, opening a video logs 404s for the `.mp4`
 and `.vtt` placeholders. Added `lib/duration.ts` ("2:14" → "2 minutes 14
 seconds" for screen readers) and the player labels in `content/sections.ts`.
 
+Decision recorded between phases 5 and 6 (deployment): Vercel's GitHub
+integration deploys (every PR gets a preview, every merge to `main` a
+production deploy); there is no `deploy.yml`. `main` is protected: the CI
+job `checks` must pass and the branch must be up to date before merging,
+admins included, so only green code reaches production. The Vercel
+project `my-website` exists; its production deploys fail until phase 10
+by design (placeholder guard). Node is pinned to `24.x`.
+
+Deviations recorded in phase 6: three loop prototypes (`orbit`,
+`breathe`, `wave`) ship temporarily behind `?ring=` so the owner can
+choose on the preview; the choice removes the other two and the switch.
+The canvas reports `data-state` and `data-draw-ms` for the tests. Frame
+cost is tested on the phone layout with the CPU slowed 4x (spec 4.7) and
+on desktop at full speed; a pre-drawn sprite approach was measured ~10x
+slower than one combined path and dropped.
+
 ## 2. Files
 New project at the repo root; `intent/` stays as is.
 
