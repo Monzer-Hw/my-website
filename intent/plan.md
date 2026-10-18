@@ -109,6 +109,16 @@ image uses the default font (Host Grotesk would need a TTF in the repo).
 The base URL comes from `lib/site-url.ts` (`NEXT_PUBLIC_SITE_URL`, else
 Vercel's production URL). Lighthouse now also asserts SEO 100.
 
+Deviations recorded in phase 9: the Vercel project and env vars already
+existed (phases 6–7). Functions are pinned to Frankfurt with `vercel.json`
+(`"regions": ["fra1"]`; `vercel.ts` would need the `@vercel/config`
+package). The rate limit is a Vercel Firewall custom rule (Hobby allows
+one): `POST /api/contact`, fixed window, 5 per IP per 10 minutes, then
+429; the form shows a specific message for 429. It lives in the Vercel
+project, not the repo. The 429 itself can only be observed on a live
+deployment once production exists (phase 10); its configuration was
+verified through the Vercel API.
+
 ## 2. Files
 New project at the repo root; `intent/` stays as is.
 
