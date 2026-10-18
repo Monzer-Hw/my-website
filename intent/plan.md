@@ -46,6 +46,16 @@ deploys of `main` fail until phase 10 replaces the placeholders; previews
 keep working. Name, initials and CV path stay in `content/site.ts`; the
 profile holds the rest. `vitest.config.ts` became `vitest.config.mts`.
 
+Deviations recorded in phase 4: section copy (headings, ledes, button
+and form labels) lives in `content/sections.ts`, so components hold no
+text; the profile gained an optional `photo`. The contact form UI and its
+validation were built now with the layout; phase 7 adds sending, spam
+checks and the server states. Video stills are decorative until phase 5
+makes them playable. Added `components/media/PosterArt.tsx` (drawn
+stand-in stills), `components/contact/CopyButton.tsx`, `lib/dates.ts`
+and dark `poster` color tokens for the stills. The halftone ring's fade
+starts at 64% of the hero height so the facts row stays readable.
+
 ## 2. Files
 New project at the repo root; `intent/` stays as is.
 

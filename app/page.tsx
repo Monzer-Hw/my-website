@@ -1,11 +1,20 @@
-import { content } from "@/content";
+import { About } from "@/components/sections/About";
+import { Contact } from "@/components/sections/Contact";
+import { Experience } from "@/components/sections/Experience";
+import { Hero } from "@/components/sections/Hero";
+import { Projects } from "@/components/sections/Projects";
+import { Stack } from "@/components/sections/Stack";
 
-// The home page sections arrive in phase 4; this proves the content wiring.
+// Section order from intent/spec.md 3.2.
 export default function Home() {
   return (
-    <div className="wrap py-section">
-      <h1 className="text-4xl font-semibold tracking-tight">{content.site.name}</h1>
-      <p className="mt-4 max-w-[30ch]">{content.profile.intro}</p>
-    </div>
+    <>
+      <Hero />
+      <Projects />
+      <About />
+      <Experience />
+      <Stack />
+      <Contact />
+    </>
   );
 }

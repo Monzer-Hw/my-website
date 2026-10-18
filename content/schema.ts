@@ -30,6 +30,8 @@ export const profileSchema = z.object({
   statement: text,
   bio: z.array(text).min(1).max(2),
   email: z.email(),
+  /** Grayscale photo, background removed (spec 3.8). Until set, a placeholder card shows. */
+  photo: z.object({ src: sitePath, alt: text, width: z.int().positive(), height: z.int().positive() }).optional(),
 });
 
 export const statusSchema = z.object({
@@ -85,9 +87,45 @@ export const stackGroupSchema = z.object({
   usedIn: z.array(projectId),
 });
 
+/** Section headings, intros and interface labels: the fixed copy around the content. */
+export const sectionsSchema = z.object({
+  hero: z.object({ primaryCta: text, secondaryCta: text }),
+  projects: z.object({
+    title: text,
+    lede: text,
+    built: text,
+    inProgress: text,
+    demo: text,
+    live: text,
+    code: text,
+  }),
+  about: z.object({ title: text }),
+  experience: z.object({ title: text, lede: text, current: text, present: text }),
+  stack: z.object({ title: text, lede: text, usedIn: text }),
+  contact: z.object({
+    title: text,
+    lede: text,
+    emailLabel: text,
+    copy: text,
+    copied: text,
+    locationLabel: text,
+    elsewhere: text,
+    form: z.object({
+      name: z.object({ label: text, placeholder: text, required: text }),
+      email: z.object({ label: text, placeholder: text, required: text, invalid: text }),
+      message: z.object({ label: text, placeholder: text, tooShort: text, maxLength: z.int().positive() }),
+      consent: z.object({ before: text, link: text, after: z.string(), required: text }),
+      note: text,
+      submit: text,
+      notConnected: text,
+    }),
+  }),
+});
+
 export const contentSchema = z
   .object({
     site: siteSchema,
+    sections: sectionsSchema,
     profile: profileSchema,
     status: statusSchema,
     projects: z.array(projectSchema).min(1),
@@ -116,6 +154,7 @@ export const contentSchema = z
   });
 
 export type Content = z.infer<typeof contentSchema>;
+export type Sections = z.input<typeof sectionsSchema>;
 export type Profile = z.input<typeof profileSchema>;
 export type Status = z.input<typeof statusSchema>;
 export type Project = z.input<typeof projectSchema>;

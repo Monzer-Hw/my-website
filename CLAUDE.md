@@ -37,19 +37,30 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
   `IconLink`, `TextLink`, `Tag`)
 - `components/site/`: page frame (`Header`, `HeaderShell`,
   `MobileMenu`, `Footer`, `SocialLinks`)
+- `components/sections/`: home sections in spec order (`Hero`,
+  `Projects`/`ProjectRow`, `About`, `Experience`, `Stack`, `Contact`,
+  `SectionHeading`)
+- `components/hero/`: `HalftoneRing` (canvas), `Photo` (placeholder card
+  until `profile.photo` is set)
+- `components/media/`: `VideoPoster`, `PosterArt` (drawn stand-in stills)
+- `components/contact/`: `ContactForm` (validation; sending in phase 7),
+  `CopyButton`
 - `content/`: all site text and data (see Content below)
-- `lib/cn.ts`: class name helper; `lib/placeholders.ts`: launch guard
+- `lib/cn.ts`: class names; `lib/placeholders.ts`: launch guard;
+  `lib/dates.ts`: `YYYY-MM` formatting
 - `scripts/`: added in later phases (see plan section 2)
 - `tests/unit/`: Vitest; `tests/e2e/`: Playwright
 
 ## Tokens (use these, never raw values)
 Colors `bg surface ink ink-2 ink-3 ink-4 line line-2 signal live danger`
-(e.g. `text-ink-3`, `bg-surface`); radii `rounded-tag|ctl|media|card|photo`;
+(e.g. `text-ink-3`, `bg-surface`), plus `poster poster-2 poster-line
+poster-ink poster-text` for the dark video stills only; radii `rounded-tag|ctl|media|card|photo`;
 breakpoints `phone:` (560px) and `desk:` (900px); `wrap` utility for the
 page column; spacing `h-header`, `py-section`, `px-gutter`.
 
 ## Content
-- Files: `site.ts` (name, nav, links), `profile.ts`, `status.ts`,
+- Files: `site.ts` (name, nav, links), `sections.ts` (headings,
+  ledes, button and form labels), `profile.ts`, `status.ts`,
   `projects.ts`, `experience.ts`, `stack.ts`; rules in `schema.ts`
   (Zod, limits from spec 3.2–3.8).
 - Components import `content` from `@/content` (validated at build).
