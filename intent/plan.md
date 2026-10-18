@@ -79,7 +79,10 @@ others and the switch. Round 1 (`orbit`, `breathe`, `wave`) was too
 subtle: on a fixed dot grid, moving the light only reads as dots growing
 and shrinking. Round 2: `sweep` (sharp dark crescent, 8 s per turn),
 `spin` (dots on concentric circles turn with their shading, 24 s per
-turn) and a stronger `wave` (4.5 s).
+turn) and a stronger `wave` (4.5 s). **Chosen: `sweep`**, with the
+largest dot capped at 0.36 of the grid step (was 0.52) because the dots
+merged in the middle of the crescent. `spin`, `wave` and `?ring=` were
+removed.
 The canvas reports `data-state` and `data-draw-ms` for the tests. Frame
 cost is tested on the phone layout with the CPU slowed 4x (spec 4.7) and
 on desktop at full speed; a pre-drawn sprite approach was measured ~10x
