@@ -40,14 +40,6 @@ test.describe("halftone ring loop", () => {
     await expect(ring(page)).toHaveAttribute("data-state", "paused");
   });
 
-  for (const variant of ["orbit", "breathe", "wave"]) {
-    test(`prototype "${variant}" runs`, async ({ page }) => {
-      await page.goto(`/?ring=${variant}`);
-      await expect(ring(page)).toHaveAttribute("data-variant", variant);
-      await expect(ring(page)).toHaveAttribute("data-state", "running");
-    });
-  }
-
   // Spec 4.7: the loop must not drop the page below 60 fps on a mid-range phone. The phone
   // layout runs with the CPU slowed 4x to stand in for one; desktop runs at full speed.
   test("draws each frame well within the 60 fps budget", async ({ page }, info) => {

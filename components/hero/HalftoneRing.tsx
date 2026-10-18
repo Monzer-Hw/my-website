@@ -3,26 +3,25 @@
 import { useEffect, useRef } from "react";
 
 /**
- * One large ring of halftone dots behind the whole hero, looping slowly (spec 4.7).
+ * One large ring of halftone dots behind the whole hero (spec 4.7). A dark crescent sweeps
+ * around it, one full turn every 8 seconds; the far side nearly fades out.
  * - Static for visitors who prefer reduced motion.
- * - Paused while the hero is off screen or the tab is hidden.
- * - Each dot's position, angle and distance are computed once per size; a frame only
+ * - Paused while the hero is off screen or the tab is hidden; resumes where it left off.
+ * - Each dot's position, angle and strength are computed once per size; a frame only
  *   recomputes radii, so drawing stays far below the 16 ms budget of 60 fps.
  * `data-state` ("running" | "paused" | "static") and `data-draw-ms` (average draw time)
  * expose this to the tests.
  */
 
-type Variant = "orbit" | "breathe" | "wave";
-const VARIANTS: Variant[] = ["orbit", "breathe", "wave"];
+type Dot = { x: number; y: number; cos: number; sin: number; strength: number };
 
-// PROTOTYPE (phase 6): `?ring=orbit|breathe|wave` switches the loop on previews so the owner
-// can choose. Once chosen, the other two variants and this switch are removed.
-function readVariant(): Variant {
-  const v = new URLSearchParams(window.location.search).get("ring");
-  return VARIANTS.includes(v as Variant) ? (v as Variant) : "orbit";
-}
+const TAU = Math.PI * 2;
+const TURN_MS = 8000; // one full sweep
+const LIGHT = 0.5; // resting direction of the crescent: toward the upper right
+const DOT_MAX = 0.36; // largest dot radius as a share of the grid step: dots never merge
 
-type Dot = { x: number; y: number; d: number; cos: number; sin: number; strength: number };
+/** Dark-to-light falloff around the ring; the high exponent makes the far side nearly empty. */
+const crescent = (cosToLight: number) => 0.06 + 0.94 * (0.5 + 0.5 * cosToLight) ** 2.4;
 
 export function HalftoneRing() {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -32,15 +31,12 @@ export function HalftoneRing() {
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
 
-    const variant = readVariant();
     const ink = getComputedStyle(document.documentElement).getPropertyValue("--color-ink").trim() || "#000";
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let W = 0;
     let H = 0;
     let step = 8;
-    let R = 0;
-    let band = 0;
     let dots: Dot[] = [];
 
     const build = () => {
@@ -58,12 +54,11 @@ export function HalftoneRing() {
       step = W < 700 ? 7 : 8;
       const cx = W * (wide ? 0.36 : 0.5);
       const cy = H * (wide ? 0.5 : 0.3);
-      R = wide ? Math.min(W * 0.27, H * 0.5) : W * 0.44;
-      band = R * 0.24;
+      const R = wide ? Math.min(W * 0.27, H * 0.5) : W * 0.44;
+      const band = R * 0.24;
+      const reach = band * 1.8; // exp(-x²) < 0.04 beyond x = 1.8, so farther dots never show
 
       dots = [];
-      // exp(-x²) < 0.04 beyond x = 1.8, so dots farther out never show; breathing needs a bit more.
-      const reach = band * (variant === "breathe" ? 2 : 1.8);
       for (let y = step / 2; y < H; y += step) {
         for (let x = step / 2; x < W; x += step) {
           const dx = x - cx;
@@ -71,7 +66,7 @@ export function HalftoneRing() {
           const d = Math.hypot(dx, dy);
           if (Math.abs(d - R) > reach) continue;
           const a = Math.atan2(dy, dx);
-          dots.push({ x, y, d, cos: Math.cos(a), sin: Math.sin(a), strength: Math.exp(-(((d - R) / band) ** 2)) });
+          dots.push({ x, y, cos: Math.cos(a), sin: Math.sin(a), strength: Math.exp(-(((d - R) / band) ** 2)) });
         }
       }
       return true;
@@ -79,12 +74,9 @@ export function HalftoneRing() {
 
     // t in ms; t = 0 is the resting frame (also the reduced-motion frame).
     const draw = (t: number) => {
-      // Light direction: darker toward the upper right, like light on a torus.
-      const light = 0.5 + (variant === "orbit" ? (t / 16000) * Math.PI * 2 : 0);
+      const light = LIGHT + (t / TURN_MS) * TAU;
       const lc = Math.cos(light);
       const ls = Math.sin(light);
-      const ringR = variant === "breathe" ? R * (1 + 0.035 * Math.sin((t / 9000) * Math.PI * 2)) : R;
-      const wavePhase = (t / 6000) * Math.PI * 2;
 
       ctx.clearRect(0, 0, W, H);
       // All dots go into one path and one fill: measured ~10x cheaper than copying a
@@ -93,21 +85,18 @@ export function HalftoneRing() {
       ctx.globalAlpha = 0.22;
       ctx.beginPath();
       for (const dot of dots) {
-        let s = variant === "breathe" ? Math.exp(-(((dot.d - ringR) / band) ** 2)) : dot.strength;
-        if (variant === "wave") s *= 0.72 + 0.28 * Math.sin(dot.d / 22 - wavePhase);
-        if (s < 0.04) continue;
-        const shade = 0.25 + 0.75 * (0.5 + 0.5 * (dot.cos * lc + dot.sin * ls));
-        const r = s * shade * step * 0.52;
+        if (dot.strength < 0.04) continue;
+        const r = dot.strength * crescent(dot.cos * lc + dot.sin * ls) * step * DOT_MAX;
         if (r < 0.25) continue;
         ctx.moveTo(dot.x + r, dot.y);
-        ctx.arc(dot.x, dot.y, r, 0, Math.PI * 2);
+        ctx.arc(dot.x, dot.y, r, 0, TAU);
       }
       ctx.fill();
     };
 
     let raf = 0;
     let start = 0;
-    let elapsed = 0; // keeps the loop's position across pauses
+    let elapsed = 0; // keeps the sweep's position across pauses
     let onScreen = true;
     let total = 0;
     let frames = 0;
@@ -138,7 +127,6 @@ export function HalftoneRing() {
         draw(0);
       }
       canvas.dataset.state = reduce ? "static" : run ? "running" : "paused";
-      canvas.dataset.variant = variant;
     };
 
     if (build()) draw(0);
