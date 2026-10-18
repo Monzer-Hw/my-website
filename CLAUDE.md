@@ -46,11 +46,15 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
   player), `VideoDialog` (native `<dialog>`; the `<video>` exists only
   while open, so nothing loads before play), `VideoPoster`, `PosterArt`
   (drawn stand-in stills; spans only, they sit beside a button)
-- `components/contact/`: `ContactForm` (validation; sending in phase 7),
-  `CopyButton`
+- `components/contact/`: `ContactForm` (validation, sending, success and
+  error states, honeypot), `CopyButton`
+- `app/api/contact/route.ts`: the only server code; validates, drops spam,
+  emails through Resend. Stores nothing; never logs personal data
 - `content/`: all site text and data (see Content below)
 - `lib/cn.ts`: class names; `lib/placeholders.ts`: launch guard;
-  `lib/dates.ts`: `YYYY-MM` formatting
+  `lib/dates.ts`: `YYYY-MM` formatting; `lib/contact.ts`: form rules and
+  spam checks shared by form and server; `lib/email.ts`: Resend HTTP API
+  (no SDK), env vars in `.env.example`
 - `scripts/`: added in later phases (see plan section 2)
 - `tests/unit/`: Vitest; `tests/e2e/`: Playwright
 

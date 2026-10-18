@@ -88,6 +88,19 @@ cost is tested on the phone layout with the CPU slowed 4x (spec 4.7) and
 on desktop at full speed; a pre-drawn sprite approach was measured ~10x
 slower than one combined path and dropped.
 
+Deviations recorded in phase 7: Resend is accepted and called through
+its HTTP API with `fetch` (no SDK package). No domain exists yet, so the
+Vercel Marketplace integration (which requires one) was skipped: the
+owner created a Resend account directly and set `RESEND_API_KEY`
+(sensitive) for Production and Preview; `CONTACT_TO` is set there too.
+Until the domain is added (phase 10), Resend's test sender
+`onboarding@resend.dev` is used and can only deliver to the account
+owner's address. `preferredRegion` is deprecated in Next.js 16, so the
+Frankfurt function region moves to the Vercel project configuration in
+phase 9 (not `preferredRegion = 'fra1'` in the route). Spam handling:
+honeypot field and a 3 s minimum fill time, both answered with a quiet
+200; the rate limit follows in phase 9.
+
 ## 2. Files
 New project at the repo root; `intent/` stays as is.
 
@@ -102,7 +115,7 @@ New project at the repo root; `intent/` stays as is.
 | `app/page.tsx` | Home: composes the sections in spec 3.2 order |
 | `app/impressum/page.mdx`, `app/datenschutz/page.mdx` | Legal pages (placeholder text until generated, spec 3.10) |
 | `app/not-found.tsx` | 404 |
-| `app/api/contact/route.ts` | Validate, spam checks, send email, JSON response; `preferredRegion = 'fra1'` |
+| `app/api/contact/route.ts` | Validate, spam checks, send email, JSON response (region set in the Vercel project, phase 9) |
 | `app/opengraph-image.tsx`, `app/sitemap.ts`, `app/robots.ts` | Link previews, sitemap, robots |
 | `components/site/` | `Header`, `HeaderShell` (client: scroll divider), `MobileMenu`, `Footer`, `SocialLinks` |
 | `components/sections/` | `Hero`, `Projects`, `ProjectRow`, `About`, `Experience`, `Stack`, `Contact` |
@@ -117,7 +130,7 @@ New project at the repo root; `intent/` stays as is.
 | `content/*.ts` | `profile`, `status`, `projects`, `experience`, `stack`; entries flagged `placeholder: true` |
 | `content/index.ts` | Validates all content at build time, runs the placeholder guard, exports `content` |
 | `lib/contact.ts` | Shared input schema and spam checks (honeypot, minimum fill time) used by form and route |
-| `lib/email.ts` | Resend client, EU region, reply-to = visitor |
+| `lib/email.ts` | Resend HTTP API via `fetch` (no SDK), plain text, reply-to = visitor |
 | `lib/placeholders.ts` | Lists placeholders; fails the build when `VERCEL_ENV=production` and any remain (replaces the planned `scripts/check-placeholders.ts`) |
 | `public/cv/Monzer-Hweit-CV.pdf`, `public/photo/`, `public/videos/` | Assets (placeholders until real) |
 | `tests/unit/*.test.ts` | Vitest: schemas, contact validation, spam checks, placeholder check |
