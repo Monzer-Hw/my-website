@@ -10,7 +10,7 @@ import { MESSAGE_MIN } from "@/lib/contact";
 type Copy = Content["sections"]["contact"]["form"];
 type Field = "name" | "email" | "message" | "consent";
 type Values = { name: string; email: string; message: string; consent: boolean };
-type Status = "idle" | "sending" | "sent" | "error";
+type Status = "idle" | "sending" | "sent" | "error" | "limited";
 
 const EMPTY: Values = { name: "", email: "", message: "", consent: false };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -97,6 +97,11 @@ export function ContactForm({
         }),
       });
       const body = (await response.json().catch(() => ({}))) as { ok?: boolean };
+      if (response.status === 429) {
+        // Vercel Firewall rate limit (5 per IP per 10 minutes), before the request reaches the server.
+        setStatus("limited");
+        return;
+      }
       if (!response.ok || !body.ok) throw new Error(`status ${response.status}`);
       setSentTo({ name: values.name.trim().split(/\s+/)[0], email: values.email.trim() });
       setStatus("sent");
@@ -241,8 +246,12 @@ export function ContactForm({
           {sending ? copy.sending : copy.submit}
         </Button>
       </div>
-      <p role="status" className={cn("text-sm text-danger", status === "error" && "mt-4")}>
-        {status === "error" ? fill(copy.sendError, { email: ownerEmail }) : ""}
+      <p role="status" className={cn("text-sm text-danger", (status === "error" || status === "limited") && "mt-4")}>
+        {status === "error"
+          ? fill(copy.sendError, { email: ownerEmail })
+          : status === "limited"
+            ? fill(copy.tooMany, { email: ownerEmail })
+            : ""}
       </p>
     </form>
   );

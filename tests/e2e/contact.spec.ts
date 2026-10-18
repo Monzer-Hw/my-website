@@ -46,6 +46,16 @@ test.describe("contact form sending (email step simulated)", () => {
     await expect(form.getByLabel("Name")).toHaveValue("Jane Doe");
   });
 
+  test("explains the rate limit when the firewall answers 429", async ({ page }) => {
+    await page.route("**/api/contact", (route) => route.fulfill({ status: 429, body: "Too Many Requests" }));
+    await page.goto("/");
+    const form = await fillValidForm(page);
+    await form.getByRole("button", { name: "Send message" }).click();
+    await expect(form.getByRole("status")).toHaveText(
+      "You've sent several messages in a short time. Please wait a few minutes, or email me directly at hello@example.com.",
+    );
+  });
+
   test("blocks a second submit while sending", async ({ page }) => {
     let calls = 0;
     let release!: () => void;

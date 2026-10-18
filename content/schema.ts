@@ -131,6 +131,8 @@ export const sectionsSchema = z.object({
       sendAnother: text,
       /** `{email}` is replaced with the site owner's address. */
       sendError: text,
+      /** Shown when the firewall's rate limit answers 429; `{email}` as above. */
+      tooMany: text,
     }),
   }),
 });

@@ -50,6 +50,9 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
   error states, honeypot), `CopyButton`
 - `app/api/contact/route.ts`: the only server code; validates, drops spam,
   emails through Resend. Stores nothing; never logs personal data
+- `vercel.json`: functions run in Frankfurt (`fra1`). The contact rate
+  limit (5 POSTs per IP per 10 min, then 429) is a Vercel Firewall rule
+  on the project, not in the repo
 - `content/`: all site text and data (see Content below)
 - `lib/cn.ts`: class names; `lib/placeholders.ts`: launch guard;
   `lib/dates.ts`: `YYYY-MM` formatting; `lib/contact.ts`: form rules and

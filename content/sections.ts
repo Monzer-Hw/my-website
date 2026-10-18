@@ -63,6 +63,8 @@ export const sections: Sections = {
       successBody: "Thanks, {name}. I'll reply to {email} as soon as I can.",
       sendAnother: "Send another message",
       sendError: "Your message couldn't be sent. Please try again, or email me directly at {email}.",
+      tooMany:
+        "You've sent several messages in a short time. Please wait a few minutes, or email me directly at {email}.",
     },
   },
 };
