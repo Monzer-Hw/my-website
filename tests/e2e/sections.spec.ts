@@ -26,7 +26,9 @@ test.describe("home sections", () => {
     const projects = page.locator("#projects article");
     await expect(projects).toHaveCount(3);
     await expect(projects.first().getByRole("heading", { level: 3 })).toHaveText("Production RAG pipeline");
-    await expect(projects.first().locator("figure")).toBeVisible();
+    await expect(
+      projects.first().getByRole("button", { name: "Watch demo: Production RAG pipeline, 2 minutes 14 seconds" }),
+    ).toBeVisible();
     await expect(
       projects.first().getByRole("link", { name: "Code for Production RAG pipeline on GitHub (opens in a new tab)" }),
     ).toBeVisible();
