@@ -1,4 +1,4 @@
-// Site-wide constants. Validation with Zod joins in phase 3 (content model).
+// Site-wide constants: real data, not placeholders. Validated by siteSchema in content/index.ts.
 
 export const site = {
   name: "Monzer Hweit",
