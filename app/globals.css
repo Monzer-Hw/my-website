@@ -16,6 +16,13 @@
   --color-live-2: #7ee0a2;
   --color-danger: #b3261e; /* form errors only */
 
+  /* Video stills: the one dark surface on the page */
+  --color-poster: #0e0e0e;
+  --color-poster-2: #1c1c1b;
+  --color-poster-line: #2e2e2c;
+  --color-poster-ink: #a9a9a4;
+  --color-poster-text: #e8e8e4;
+
   --radius-tag: 4px;
   --radius-ctl: 8px; /* buttons, inputs, small controls: never pills */
   --radius-media: 14px;
@@ -49,6 +56,15 @@
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: calc(var(--spacing-header) + 16px);
+    /* Browser surfaces carry the palette too */
+    scrollbar-color: var(--color-line-2) var(--color-bg);
+    accent-color: var(--color-ink);
+    caret-color: var(--color-ink);
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-bg);
   }
 
   @media (prefers-reduced-motion: no-preference) {
