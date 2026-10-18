@@ -101,6 +101,14 @@ phase 9 (not `preferredRegion = 'fra1'` in the route). Spam handling:
 honeypot field and a 3 s minimum fill time, both answered with a quiet
 200; the rate limit follows in phase 9.
 
+Deviations recorded in phase 8: legal pages are structured content in
+`content/legal.ts` (no MDX, so no new packages), marked as placeholders
+until the generated texts arrive, so the launch guard covers them. Header
+section links are `/#section` so they work from every page. The preview
+image uses the default font (Host Grotesk would need a TTF in the repo).
+The base URL comes from `lib/site-url.ts` (`NEXT_PUBLIC_SITE_URL`, else
+Vercel's production URL). Lighthouse now also asserts SEO 100.
+
 ## 2. Files
 New project at the repo root; `intent/` stays as is.
 
