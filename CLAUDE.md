@@ -37,8 +37,8 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
   `IconLink`, `TextLink`, `Tag`)
 - `components/site/`: page frame (`Header`, `HeaderShell`,
   `MobileMenu`, `Footer`, `SocialLinks`)
-- `content/site.ts`: name, navigation, social and legal links
-- `lib/cn.ts`: class name helper
+- `content/`: all site text and data (see Content below)
+- `lib/cn.ts`: class name helper; `lib/placeholders.ts`: launch guard
 - `scripts/`: added in later phases (see plan section 2)
 - `tests/unit/`: Vitest; `tests/e2e/`: Playwright
 
@@ -47,6 +47,16 @@ Colors `bg surface ink ink-2 ink-3 ink-4 line line-2 signal live danger`
 (e.g. `text-ink-3`, `bg-surface`); radii `rounded-tag|ctl|media|card|photo`;
 breakpoints `phone:` (560px) and `desk:` (900px); `wrap` utility for the
 page column; spacing `h-header`, `py-section`, `px-gutter`.
+
+## Content
+- Files: `site.ts` (name, nav, links), `profile.ts`, `status.ts`,
+  `projects.ts`, `experience.ts`, `stack.ts`; rules in `schema.ts`
+  (Zod, limits from spec 3.2–3.8).
+- Components import `content` from `@/content` (validated at build).
+  Invalid content fails `next build` with the field path.
+- Entries marked `placeholder: true` are stand-ins. With
+  `VERCEL_ENV=production` the build fails while any remain (spec 3.7);
+  previews and local builds pass. Remove the flag only with real content.
 
 ## Next.js 16 gotchas
 - `cacheComponents` is on: `new Date()`, `Math.random()` and similar
@@ -57,7 +67,7 @@ page column; spacing `h-header`, `py-section`, `px-gutter`.
 - Follow the spec. If the build must deviate, update `intent/plan.md`
   (or the spec) in the same commit.
 - All site text and data live in `content/`, never hard-coded in
-  components (from phase 3).
+  components.
 - No cookies, trackers or third-party requests on page load (spec 3.9).
 - Never commit secrets; `.env.example` lists the variable names.
 - Light theme only; colors, type and spacing come from the tokens in
