@@ -1,3 +1,4 @@
+import { ProjectVideo } from "@/components/media/ProjectVideo";
 import { VideoPoster } from "@/components/media/VideoPoster";
 import { Icon } from "@/components/ui/Icon";
 import { TextLink } from "@/components/ui/TextLink";
@@ -11,6 +12,26 @@ type Copy = Content["sections"]["projects"];
 export function ProjectRow({ project, copy }: { project: Project; copy: Copy }) {
   const { id, title, status, summary, decisions, tools, links, posterArt } = project;
   const built = status.kind === "built";
+
+  const otherLinks =
+    links.live || links.code ? (
+      <>
+        {links.live && (
+          <TextLink href={links.live} target="_blank" rel="noopener noreferrer">
+            <Icon name="out" className="text-ink-3" />
+            {copy.live}
+            <span className="sr-only"> (live demo of {title}, opens in a new tab)</span>
+          </TextLink>
+        )}
+        {links.code && (
+          <TextLink href={links.code} target="_blank" rel="noopener noreferrer">
+            <Icon name="code" className="text-ink-3" />
+            {copy.code}
+            <span className="sr-only"> for {title} on GitHub (opens in a new tab)</span>
+          </TextLink>
+        )}
+      </>
+    ) : null;
 
   return (
     <article
@@ -30,27 +51,19 @@ export function ProjectRow({ project, copy }: { project: Project; copy: Copy }) 
           {built ? `${copy.built} ${status.date}` : copy.inProgress}
         </p>
 
-        {links.video && (
-          <VideoPoster title={title} duration={links.video.duration} poster={links.video.poster} art={posterArt} />
-        )}
-
-        {(links.live || links.code) && (
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-            {links.live && (
-              <TextLink href={links.live} target="_blank" rel="noopener noreferrer">
-                <Icon name="out" className="text-ink-3" />
-                {copy.live}
-                <span className="sr-only"> (live demo of {title}, opens in a new tab)</span>
-              </TextLink>
-            )}
-            {links.code && (
-              <TextLink href={links.code} target="_blank" rel="noopener noreferrer">
-                <Icon name="code" className="text-ink-3" />
-                {copy.code}
-                <span className="sr-only"> for {title} on GitHub (opens in a new tab)</span>
-              </TextLink>
-            )}
-          </div>
+        {links.video ? (
+          <ProjectVideo
+            id={id}
+            title={title}
+            video={links.video}
+            copy={copy}
+            still={
+              <VideoPoster title={title} duration={links.video.duration} poster={links.video.poster} art={posterArt} />
+            }
+            links={otherLinks}
+          />
+        ) : (
+          otherLinks && <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">{otherLinks}</div>
         )}
       </div>
 
