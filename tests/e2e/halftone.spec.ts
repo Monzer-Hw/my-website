@@ -40,7 +40,7 @@ test.describe("halftone ring loop", () => {
     await expect(ring(page)).toHaveAttribute("data-state", "paused");
   });
 
-  for (const variant of ["orbit", "breathe", "wave"]) {
+  for (const variant of ["sweep", "spin", "wave"]) {
     test(`prototype "${variant}" runs`, async ({ page }) => {
       await page.goto(`/?ring=${variant}`);
       await expect(ring(page)).toHaveAttribute("data-variant", variant);

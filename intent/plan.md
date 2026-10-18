@@ -73,9 +73,13 @@ admins included, so only green code reaches production. The Vercel
 project `my-website` exists; its production deploys fail until phase 10
 by design (placeholder guard). Node is pinned to `24.x`.
 
-Deviations recorded in phase 6: three loop prototypes (`orbit`,
-`breathe`, `wave`) ship temporarily behind `?ring=` so the owner can
-choose on the preview; the choice removes the other two and the switch.
+Deviations recorded in phase 6: loop prototypes ship temporarily behind
+`?ring=` so the owner can choose on the preview; the choice removes the
+others and the switch. Round 1 (`orbit`, `breathe`, `wave`) was too
+subtle: on a fixed dot grid, moving the light only reads as dots growing
+and shrinking. Round 2: `sweep` (sharp dark crescent, 8 s per turn),
+`spin` (dots on concentric circles turn with their shading, 24 s per
+turn) and a stronger `wave` (4.5 s).
 The canvas reports `data-state` and `data-draw-ms` for the tests. Frame
 cost is tested on the phone layout with the CPU slowed 4x (spec 4.7) and
 on desktop at full speed; a pre-drawn sprite approach was measured ~10x
