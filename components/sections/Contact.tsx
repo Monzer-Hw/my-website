@@ -39,7 +39,7 @@ export function Contact() {
 
         <div className="grid min-w-0 gap-5">
           <div className="rounded-card bg-bg p-[clamp(24px,3.6vw,44px)] shadow-[0_0_0_1px_var(--color-line)]">
-            <ContactForm copy={copy.form} privacyHref={privacy} />
+            <ContactForm copy={copy.form} privacyHref={privacy} ownerEmail={profile.email} />
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3">
             <p className="text-[0.9375rem] text-ink-3">{copy.elsewhere}</p>

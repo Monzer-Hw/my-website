@@ -1,14 +1,18 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
 import type { Content } from "@/content/schema";
 import { cn } from "@/lib/cn";
+import { MESSAGE_MIN } from "@/lib/contact";
 
 type Copy = Content["sections"]["contact"]["form"];
 type Field = "name" | "email" | "message" | "consent";
 type Values = { name: string; email: string; message: string; consent: boolean };
+type Status = "idle" | "sending" | "sent" | "error";
 
+const EMPTY: Values = { name: "", email: "", message: "", consent: false };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validate(v: Values, copy: Copy): Partial<Record<Field, string>> {
@@ -16,27 +20,51 @@ function validate(v: Values, copy: Copy): Partial<Record<Field, string>> {
   if (!v.name.trim()) errors.name = copy.name.required;
   if (!v.email.trim()) errors.email = copy.email.required;
   else if (!EMAIL.test(v.email.trim())) errors.email = copy.email.invalid;
-  if (v.message.trim().length < 10) errors.message = copy.message.tooShort;
+  if (v.message.trim().length < MESSAGE_MIN) errors.message = copy.message.tooShort;
   if (!v.consent) errors.consent = copy.consent.required;
   return errors;
 }
+
+const fill = (template: string, values: Record<string, string>) =>
+  template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? "");
 
 const input =
   "w-full min-h-[50px] rounded-ctl border border-line-2 bg-bg px-3.5 py-3 text-ink transition-[border-color,box-shadow] duration-200 placeholder:text-ink-3 hover:border-ink-3 focus:border-ink focus:shadow-[0_0_0_4px_var(--color-signal-wash)] focus:outline-none aria-[invalid=true]:border-danger";
 
 /**
- * Contact form UI with validation (spec 3.4). Sending arrives in phase 7;
- * until then a valid submit explains that sending isn't connected.
+ * Contact form (spec 3.4): browser-side validation for quick feedback, then POST /api/contact,
+ * which validates again and emails the message. A hidden honeypot field and the time the form
+ * appeared let the server drop bots. Nothing is stored.
  */
-export function ContactForm({ copy, privacyHref }: { copy: Copy; privacyHref: string }) {
-  const [values, setValues] = useState<Values>({ name: "", email: "", message: "", consent: false });
+export function ContactForm({
+  copy,
+  privacyHref,
+  ownerEmail,
+}: {
+  copy: Copy;
+  privacyHref: string;
+  ownerEmail: string;
+}) {
+  const [values, setValues] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
   const [attempted, setAttempted] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
+  const [sentTo, setSentTo] = useState({ name: "", email: "" });
+  const startedAt = useRef(0);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const consentRef = useRef<HTMLInputElement>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
+  const successRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
+
+  useEffect(() => {
+    if (status === "sent") successRef.current?.focus();
+  }, [status]);
 
   function update<K extends Field>(field: K, value: Values[K]) {
     const next = { ...values, [field]: value };
@@ -44,19 +72,67 @@ export function ContactForm({ copy, privacyHref }: { copy: Copy; privacyHref: st
     if (attempted) setErrors(validate(next, copy));
   }
 
-  function submit(e: FormEvent) {
+  async function submit(e: FormEvent) {
     e.preventDefault();
+    if (status === "sending") return;
     setAttempted(true);
     const found = validate(values, copy);
     setErrors(found);
     const first = (["name", "email", "message", "consent"] as const).find((f) => found[f]);
     if (first) {
-      setNotice("");
       const target = { name: nameRef, email: emailRef, message: messageRef, consent: consentRef }[first];
       target.current?.focus();
       return;
     }
-    setNotice(copy.notConnected);
+
+    setStatus("sending");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...values,
+          website: honeypotRef.current?.value ?? "",
+          startedAt: startedAt.current,
+        }),
+      });
+      const body = (await response.json().catch(() => ({}))) as { ok?: boolean };
+      if (!response.ok || !body.ok) throw new Error(`status ${response.status}`);
+      setSentTo({ name: values.name.trim().split(/\s+/)[0], email: values.email.trim() });
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
+  }
+
+  function reset() {
+    setValues(EMPTY);
+    setErrors({});
+    setAttempted(false);
+    setStatus("idle");
+    startedAt.current = Date.now();
+    requestAnimationFrame(() => nameRef.current?.focus());
+  }
+
+  if (status === "sent") {
+    return (
+      <div className="py-3">
+        <div aria-hidden="true" className="mb-[22px] grid size-12 place-items-center rounded-full bg-ink text-bg">
+          <Icon name="check" className="size-[22px]" />
+        </div>
+        <h3
+          ref={successRef}
+          tabIndex={-1}
+          className="text-[clamp(1.5rem,1.2rem+1vw,2rem)] tracking-[-0.03em] outline-none"
+        >
+          {copy.successTitle}
+        </h3>
+        <p className="mt-3 max-w-[46ch] text-ink-2">{fill(copy.successBody, sentTo)}</p>
+        <Button variant="soft" className="mt-7" onClick={reset}>
+          {copy.sendAnother}
+        </Button>
+      </div>
+    );
   }
 
   const err = (field: Field) =>
@@ -66,8 +142,10 @@ export function ContactForm({ copy, privacyHref }: { copy: Copy; privacyHref: st
       </p>
     ) : null;
 
+  const sending = status === "sending";
+
   return (
-    <form noValidate onSubmit={submit}>
+    <form noValidate onSubmit={submit} aria-busy={sending}>
       <div className="grid gap-5 phone:grid-cols-2">
         <div className="flex min-w-0 flex-col gap-2">
           <label htmlFor="f-name" className="text-[0.9375rem] font-medium text-ink">
@@ -127,6 +205,13 @@ export function ContactForm({ copy, privacyHref }: { copy: Copy; privacyHref: st
             {values.message.length} / {copy.message.maxLength}
           </p>
         </div>
+
+        {/* Honeypot: invisible and unreachable for people, filled in by bots. */}
+        <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+          <label htmlFor="f-website">Website</label>
+          <input ref={honeypotRef} id="f-website" name="website" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
+        </div>
+
         <div className="grid grid-cols-[20px_minmax(0,1fr)] gap-x-3 gap-y-1 text-[0.9375rem] text-ink-2 phone:col-span-2">
           <input
             ref={consentRef}
@@ -152,10 +237,12 @@ export function ContactForm({ copy, privacyHref }: { copy: Copy; privacyHref: st
 
       <div className="mt-7 flex flex-wrap items-center justify-between gap-x-6 gap-y-3.5 border-t border-line pt-6">
         <p className="text-sm text-ink-3">{copy.note}</p>
-        <Button type="submit">{copy.submit}</Button>
+        <Button type="submit" disabled={sending} className={cn(sending && "pointer-events-none opacity-60")}>
+          {sending ? copy.sending : copy.submit}
+        </Button>
       </div>
-      <p role="status" className={cn("text-sm text-ink-2", notice && "mt-4")}>
-        {notice}
+      <p role="status" className={cn("text-sm text-danger", status === "error" && "mt-4")}>
+        {status === "error" ? fill(copy.sendError, { email: ownerEmail }) : ""}
       </p>
     </form>
   );

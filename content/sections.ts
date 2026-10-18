@@ -53,7 +53,11 @@ export const sections: Sections = {
       },
       note: "I usually reply within a few days.",
       submit: "Send message",
-      notConnected: "Sending isn't connected yet. Until it is, please use the email address on the left.",
+      sending: "Sending…",
+      successTitle: "Message sent.",
+      successBody: "Thanks, {name}. I'll reply to {email} as soon as I can.",
+      sendAnother: "Send another message",
+      sendError: "Your message couldn't be sent. Please try again, or email me directly at {email}.",
     },
   },
 };
