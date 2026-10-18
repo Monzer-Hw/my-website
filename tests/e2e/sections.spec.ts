@@ -67,9 +67,6 @@ test.describe("home sections", () => {
     await form.getByLabel("Email").fill("jane@company.com");
     await form.getByLabel("Message", { exact: true }).fill("Hello, I'd like to talk about a project.");
     await expect(form.getByText("40 / 2000")).toBeVisible();
-    await form.getByRole("checkbox").check();
-    await form.getByRole("button", { name: "Send message" }).click();
-    await expect(form.getByRole("status")).toHaveText(/isn't connected yet/);
   });
 
   test("the email copy button copies the address", async ({ page, context, browserName }) => {

@@ -120,7 +120,13 @@ export const sectionsSchema = z.object({
       consent: z.object({ before: text, link: text, after: z.string(), required: text }),
       note: text,
       submit: text,
-      notConnected: text,
+      sending: text,
+      /** `{name}` is replaced with the visitor's first name, `{email}` with their address. */
+      successTitle: text,
+      successBody: text,
+      sendAnother: text,
+      /** `{email}` is replaced with the site owner's address. */
+      sendError: text,
     }),
   }),
 });
