@@ -12,17 +12,20 @@ function withoutPlaceholders(c: Content): Content {
     projects: c.projects.map(clear),
     experience: c.experience.map(clear),
     stack: c.stack.map(clear),
+    legal: { impressum: clear(c.legal.impressum), datenschutz: clear(c.legal.datenschutz) },
   };
 }
 
 describe("findPlaceholders", () => {
   it("lists every placeholder entry in readable form", () => {
     const found = findPlaceholders(content);
-    expect(found).toHaveLength(14);
+    expect(found).toHaveLength(16);
     expect(found).toEqual(
       expect.arrayContaining([
         "profile",
         "status",
+        "legal: Impressum",
+        "legal: Datenschutzerklärung",
         "projects: Sudoku solver",
         "experience: AI Engineer at Nordwerk Analytics GmbH",
         "stack: Computer vision",

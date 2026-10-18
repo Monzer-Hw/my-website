@@ -12,8 +12,9 @@ test.describe("home sections", () => {
 
   test("every in-page link points to an element that exists", async ({ page }) => {
     await page.goto("/");
-    const targets = await page.locator('a[href^="#"]').evaluateAll((links) =>
-      [...new Set(links.map((a) => a.getAttribute("href")!.slice(1)))],
+    // Section links are "#id" in the page and "/#id" in the header (so they work from any page).
+    const targets = await page.locator('a[href^="#"], a[href^="/#"]').evaluateAll((links) =>
+      [...new Set(links.map((a) => a.getAttribute("href")!.replace(/^\/?#/, "")))],
     );
     expect(targets.length).toBeGreaterThan(5);
     for (const id of targets) {
