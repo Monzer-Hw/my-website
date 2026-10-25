@@ -262,9 +262,10 @@ Light theme only in v1.
   - It pauses when the hero is off screen or the tab is hidden.
   - It must not drop the page below 60 frames per second on a
     mid-range phone.
-- **Intro reveal**: on load, each letter of the intro first appears as
-  a flickering block of dots, then the letters resolve into text one by
-  one in random order (about two seconds). Screen readers get the whole
+- **Intro reveal**: on load, the letters of the intro stream in from
+  left to right (90 per second); each first appears as a flickering
+  block of dots, then resolves into its letter (about two seconds in
+  all). Screen readers get the whole
   sentence at once; the text is plain text before and after; skipped for
   reduced motion.
 - Elsewhere: hover fades of 0.2s, buttons press in slightly, the

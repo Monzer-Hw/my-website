@@ -4,18 +4,18 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * The hero intro, revealed once on load (owner's design artifact): every letter first appears as a
- * flickering block of dots (a random mix of shapes on one shared grid), then the letters resolve
- * into text one by one in random order, in place.
+ * The hero intro, revealed once on load (owner's intro playground): the letters stream in from left
+ * to right; each first appears as a flickering block of dots (a random mix of shapes on one shared
+ * grid), then resolves into its letter in place.
  * - Screen readers get the sentence from a visually hidden copy right away.
  * - The text is server-rendered and visible before the animation, and stays as plain text after it.
  * - Skipped for reduced motion. `data-state` ("idle" | "animating" | "done" | "static") for tests.
  */
 
-// Settings chosen in the owner's intro playground
-const CPS = 121; // letters resolved per second
+// Settings chosen in the owner's intro playground: stream order, random mix, circle dots, random fill
+const CPS = 90; // letters per second
 const BLOCK = 1.5;
-const SPACING = 4.3; // dots per font-size
+const SPACING = 5.4; // dot spacing = font size ÷ SPACING
 const DOT_SIZE = 0.84;
 const STEP = 1000 / CPS;
 const BUILD = 160 / BLOCK;
@@ -135,14 +135,10 @@ export function IntroReveal({ text, className }: { text: string; className?: str
       return out;
     });
 
-    // Random reveal order: all blocks form together, letters resolve one by one.
-    const rank = chars.map((_, i) => i);
-    for (let i = rank.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [rank[i], rank[j]] = [rank[j], rank[i]];
-    }
-    const fadeAt = rank.map((rk) => START + BUILD + HOLD + rk * STEP);
-    const total = START + BUILD + HOLD + chars.length * STEP + RESOLVE;
+    // Stream: letter i's block starts forming STEP ms after the previous one, then dissolves into it.
+    const buildAt = chars.map((_, i) => START + i * STEP);
+    const fadeAt = buildAt.map((b) => b + BUILD + HOLD);
+    const total = START + chars.length * STEP + BUILD + HOLD + RESOLVE;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     cv.width = W * dpr;
@@ -189,8 +185,9 @@ export function IntroReveal({ text, className }: { text: string; className?: str
       if (resized || t > total) return finish();
       ctx.clearRect(0, 0, W, H);
       const tick = Math.floor(t / 70);
-      const base = t - START;
       for (let i = 0; i < chars.length; i++) {
+        const base = t - buildAt[i];
+        if (base < -THINK) continue; // the stream hasn't reached this letter yet
         const ds = dots[i];
         let textK = 0;
         for (const d of ds) {
