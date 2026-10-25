@@ -78,9 +78,9 @@ test.describe("hero background fallback", () => {
 });
 
 test.describe("hero intro", () => {
-  const intro = (page: Page) => page.locator("section[aria-labelledby='name'] p[data-state]");
+  const intro = (page: Page) => page.locator("section[aria-labelledby='name'] h1[data-state]");
   const sentence =
-    "AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.";
+    "I’m Monzer Hweit, an AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.";
 
   test("reveals the text from dots, then leaves plain text", async ({ page }) => {
     await page.goto("/");

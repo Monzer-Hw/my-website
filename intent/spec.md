@@ -44,7 +44,9 @@ added under `/de/...` so no existing link breaks.
    carries the name). Below 900px: menu
    button instead of section links; GitHub and LinkedIn move into the
    menu below 560px.
-2. **Hero**: name, one-line intro, buttons "See my work" (to Projects)
+2. **Hero**: one intro sentence that starts with the name ("I’m Monzer
+   Hweit, an AI engineer building…"; it is the page heading, at intro
+   size, at most 140 characters), buttons "See my work" (to Projects)
    and "Get in touch" (to Contact), and photo.
 3. **Projects**: one row per project (see 3.3).
 4. **About**: one statement and at most two short paragraphs.
@@ -241,8 +243,8 @@ Light theme only in v1.
 - **Tags** ("exploring", "in progress"): 4px corners, thin border.
 
 ### 4.6 Section details
-- **Hero**: name and intro left, photo right. On phones: text, then
-  photo.
+- **Hero**: intro sentence and buttons left, photo right. On phones:
+  text, then photo.
 - **Projects**: title, status, video still and links in the left
   column, which stays in view while scrolling; description, decisions
   and tools on the right. Video stills are 16:9, with the duration
@@ -253,8 +255,8 @@ Light theme only in v1.
 ### 4.7 Motion
 - **Dot sphere** (revised by the owner after phase 9; replaces the
   halftone ring): a slowly turning sphere of fine dots that folds into
-  ribbons, behind the whole hero, right of the name on desktop and
-  behind the name and intro on phones. It **loops continuously**: slow
+  ribbons, behind the whole hero, right of the intro on desktop and
+  behind the intro on phones. It **loops continuously**: slow
   and subtle, never competing with the text; dots behind the text column
   are fainter. Where WebGL is missing or runs without a GPU, the
   halftone ring (sweep) shows instead.
@@ -374,6 +376,7 @@ v1 is done when:
 | Ring behind the whole hero, looping | Ring that draws in once |
 | Dot sphere behind the hero, ring as fallback (after phase 9) | Halftone ring |
 | Intro revealed from dot blocks on load (after phase 9) | Static intro |
+| Intro sentence with the name as the page heading, no big name (after phase 9) | Large two-line name above the intro |
 | No facts row in the hero (after phase 9) | Location, focus and status row under the hero |
 | No name or "MH" mark in the header (after phase 9) | Name with mark linking home |
 | Project media in the left column | Large video above each description |

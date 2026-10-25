@@ -27,8 +27,18 @@ const MIX = ["rect", "xheight", "pill", "ellipse", "diamond", "baseline", "glyph
 
 type Dot = { x: number; y: number; h: number; delay: number };
 
-export function IntroReveal({ text, className }: { text: string; className?: string }) {
-  const paragraph = useRef<HTMLParagraphElement>(null);
+export function IntroReveal({
+  text,
+  as: Tag = "p",
+  id,
+  className,
+}: {
+  text: string;
+  as?: "p" | "h1";
+  id?: string;
+  className?: string;
+}) {
+  const root = useRef<HTMLParagraphElement>(null); // same shape as HTMLHeadingElement
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<"idle" | "animating" | "done" | "static">("idle");
   const words = text.split(" ");
@@ -52,7 +62,7 @@ export function IntroReveal({ text, className }: { text: string; className?: str
   // Run the dot animation while the canvas exists.
   useEffect(() => {
     if (state !== "animating") return;
-    const p = paragraph.current;
+    const p = root.current;
     const cv = canvasRef.current;
     const ctx = cv?.getContext("2d");
     if (!p || !cv || !ctx) return;
@@ -232,7 +242,7 @@ export function IntroReveal({ text, className }: { text: string; className?: str
   }, [state]);
 
   return (
-    <p ref={paragraph} data-state={state} className={cn("relative", className)}>
+    <Tag ref={root} id={id} data-state={state} className={cn("relative", className)}>
       <span className="sr-only">{text}</span>
       <span aria-hidden="true">
         {words.map((word, wi) => (
@@ -255,6 +265,6 @@ export function IntroReveal({ text, className }: { text: string; className?: str
       {state === "animating" && (
         <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute top-0 left-0" />
       )}
-    </p>
+    </Tag>
   );
 }
