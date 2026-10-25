@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { content } from "@/content";
 
 export function Hero() {
-  const { profile, sections } = content;
+  const { site, profile, sections } = content;
 
   return (
     <section
@@ -16,11 +16,12 @@ export function Hero() {
       <HeroSphere />
       <div className="wrap relative grid grid-cols-1 items-center gap-12 desk:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
         <div>
-          {/* The intro sentence, which starts with the name, is the page heading (intro size and look). */}
+          {/* The intro sentence, which starts with the name (in bold), is the page heading, at intro size. */}
           <IntroReveal
             as="h1"
             id="name"
             text={profile.intro}
+            strong={site.name}
             className="max-w-[30ch] text-[clamp(1.25rem,1.05rem+0.7vw,1.625rem)] leading-[1.35] font-normal tracking-[-0.015em] text-pretty text-ink-2"
           />
           <div className="mt-8 flex flex-wrap gap-2.5">

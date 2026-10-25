@@ -98,6 +98,14 @@ test.describe("hero intro", () => {
     await expect(intro(page).locator('[aria-hidden="true"]').first()).toBeAttached();
   });
 
+  test("shows the name in bold", async ({ page }) => {
+    await page.goto("/");
+    const bold = await intro(page)
+      .locator("[data-c]")
+      .evaluateAll((els) => els.filter((e) => getComputedStyle(e).fontWeight === "600").map((e) => e.textContent).join(""));
+    expect(bold).toBe("Monzer Hweit");
+  });
+
   test("is skipped for reduced motion", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");

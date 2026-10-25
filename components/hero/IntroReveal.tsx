@@ -31,17 +31,29 @@ export function IntroReveal({
   text,
   as: Tag = "p",
   id,
+  strong,
   className,
 }: {
   text: string;
   as?: "p" | "h1";
   id?: string;
+  /** A phrase within `text` shown in bold ink (the name). */
+  strong?: string;
   className?: string;
 }) {
   const root = useRef<HTMLParagraphElement>(null); // same shape as HTMLHeadingElement
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<"idle" | "animating" | "done" | "static">("idle");
   const words = text.split(" ");
+  // Character offsets of each word in `text`, and the range to show in bold.
+  const wordStart: number[] = [];
+  for (let i = 0, pos = 0; i < words.length; i++) {
+    wordStart.push(pos);
+    pos += words[i].length + 1;
+  }
+  const from = strong ? text.indexOf(strong) : -1;
+  const isStrong = (at: number) => from >= 0 && at >= from && at < from + strong!.length;
+  const strongClass = (at: number) => (isStrong(at) ? "font-semibold text-ink" : undefined);
 
   // Decide whether to animate once fonts are ready (glyph shapes depend on the real font).
   useEffect(() => {
@@ -93,11 +105,13 @@ export function IntroReveal({
     off.width = W;
     off.height = H;
     const o = off.getContext("2d", { willReadFrequently: true })!;
-    o.font = font;
     o.textBaseline = "alphabetic";
     o.fillStyle = "#000";
     chars.forEach((c, i) => {
-      if (!c.dataset.sp) o.fillText(c.textContent ?? "", boxes[i].x, boxes[i].y + asc);
+      if (c.dataset.sp) return;
+      // Per character, so bold letters (the name) are sampled in bold.
+      o.font = `${getComputedStyle(c).fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+      o.fillText(c.textContent ?? "", boxes[i].x, boxes[i].y + asc);
     });
     const img = o.getImageData(0, 0, W, H).data;
     const glyphAt = (x: number, y: number) =>
@@ -249,13 +263,13 @@ export function IntroReveal({
           <Fragment key={wi}>
             <span className="inline-block whitespace-nowrap">
               {[...word].map((ch, ci) => (
-                <span key={ci} data-c="">
+                <span key={ci} data-c="" className={strongClass(wordStart[wi] + ci)}>
                   {ch}
                 </span>
               ))}
             </span>
             {wi < words.length - 1 && (
-              <span data-c="" data-sp="1">
+              <span data-c="" data-sp="1" className={strongClass(wordStart[wi] + word.length)}>
                 {" "}
               </span>
             )}
