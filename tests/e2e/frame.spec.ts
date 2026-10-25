@@ -57,13 +57,15 @@ test.describe("page frame", () => {
     await page.goto("/");
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
-    const outline = await page.evaluate(() => {
-      const s = getComputedStyle(document.activeElement as Element);
-      return { style: s.outlineStyle, width: s.outlineWidth, color: s.outlineColor };
-    });
-    expect(outline.style).toBe("solid");
-    expect(outline.width).toBe("2px");
-    expect(outline.color).toBe("rgb(47, 73, 209)");
+    // Polled: links with `transition-colors` fade the outline color in over 0.2s.
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const s = getComputedStyle(document.activeElement as Element);
+          return { style: s.outlineStyle, width: s.outlineWidth, color: s.outlineColor };
+        }),
+      )
+      .toEqual({ style: "solid", width: "2px", color: "rgb(47, 73, 209)" });
   });
 
   test("loads nothing from other sites (font is self-hosted)", async ({ page, baseURL }) => {
