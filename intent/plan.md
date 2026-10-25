@@ -119,6 +119,24 @@ project, not the repo. The 429 itself can only be observed on a live
 deployment once production exists (phase 10); its configuration was
 verified through the Vercel API.
 
+Deviations recorded after phase 9 (owner-revised hero, from the owner's
+design artifact): `components/hero/HeroSphere.tsx` draws a WebGL sphere
+of 70,000 dots (32,000 on narrow screens) that folds into ribbons; it
+replaces the sweep ring, which stays as the fallback without WebGL.
+Settings, position and timing follow the artifact; dots behind the text
+column are fainter, and on phones the sphere sits where the ring did
+(behind the name and intro) so the small fact lines stay clear.
+`components/hero/IntroReveal.tsx` reveals the intro from dot blocks once
+fonts are ready (at most 1.2 s wait); the text is server-rendered, a
+visually hidden copy serves screen readers, and the canvas exists only
+during the ~2 s animation. Both report `data-state` for the tests; the
+sphere also reports `data-frames`. Measured in headless Chromium with the
+sphere running: about 60 fps on desktop and phone layouts at full speed,
+42–46 fps with the CPU slowed 4x (the ring test's draw-time budget no
+longer applies: the work is on the GPU, which headless Chromium may
+emulate in software). Spec 4.7's 60 fps goal is checked on a real
+mid-range phone on the preview before merging.
+
 ## 2. Files
 New project at the repo root; `intent/` stays as is.
 
@@ -140,7 +158,9 @@ New project at the repo root; `intent/` stays as is.
 | `components/ui/` | `Button` (`Button`, `ButtonLink`), `IconButton` (`IconLink`: icon-only links), `TextLink`, `Tag`, `Icon` (inline SVG components) |
 | `content/site.ts` | Name, navigation, social and legal links; added in phase 2 because the header needs it, validated from phase 3 |
 | `lib/cn.ts` | Class name helper |
-| `components/hero/HalftoneRing.tsx` | Client canvas ring: loop, pause off-screen and in hidden tabs, reduced motion |
+| `components/hero/HalftoneRing.tsx` | Client canvas ring: loop, pause off-screen and in hidden tabs, reduced motion; fallback for the sphere |
+| `components/hero/HeroSphere.tsx` | Client WebGL dot sphere (after phase 9): same loop, pause and reduced-motion rules |
+| `components/hero/IntroReveal.tsx` | Client intro reveal from dot blocks (after phase 9), skipped for reduced motion |
 | `components/hero/Photo.tsx` | Placeholder card until a photo exists; photo without card after |
 | `components/media/VideoPoster.tsx`, `VideoDialog.tsx`, `ProjectVideo.tsx` | Poster and click-to-load `<video>` with captions in a `<dialog>`; `ProjectVideo` wires the still and "Watch demo" to it |
 | `components/contact/ContactForm.tsx` | Client form: field validation, counter, consent, honeypot, success and error states |
