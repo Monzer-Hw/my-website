@@ -151,10 +151,27 @@ export function IntroReveal({ text, className }: { text: string; className?: str
     cv.style.height = `${H}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = cs.color;
-    const dot = (x: number, y: number, r: number) => {
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fill();
+    // Dots are grouped by opacity (LEVELS steps) and each group is filled once per frame:
+    // one fill per dot cost long main-thread tasks on slow phones.
+    const LEVELS = 16;
+    const buckets: number[][] = Array.from({ length: LEVELS + 1 }, () => []);
+    const dot = (x: number, y: number, r: number, alpha: number) => {
+      const level = Math.round(alpha * LEVELS);
+      if (level > 0) buckets[level].push(x, y, r);
+    };
+    const flush = () => {
+      for (let level = 1; level <= LEVELS; level++) {
+        const b = buckets[level];
+        if (!b.length) continue;
+        ctx.globalAlpha = level / LEVELS;
+        ctx.beginPath();
+        for (let j = 0; j < b.length; j += 3) {
+          ctx.moveTo(b[j] + b[j + 2], b[j + 1]);
+          ctx.arc(b[j], b[j + 1], b[j + 2], 0, Math.PI * 2);
+        }
+        ctx.fill();
+        b.length = 0;
+      }
     };
 
     let raf = 0;
@@ -181,8 +198,7 @@ export function IntroReveal({ text, className }: { text: string; className?: str
           if (u < 0) {
             // Thinking: faint flicker before the dot lands
             if (u > -THINK && (d.h * 997 + tick * 0.37) % 1 < 0.16) {
-              ctx.globalAlpha = 0.28 * (1 + u / THINK);
-              dot(d.x, d.y, rad * 0.8);
+              dot(d.x, d.y, rad * 0.8, 0.28 * (1 + u / THINK));
             }
             continue;
           }
@@ -200,12 +216,12 @@ export function IntroReveal({ text, className }: { text: string; className?: str
             continue;
           }
           const flick = (d.h * 991 + tick * 0.41) % 1 < 0.22 ? 0.45 : 1;
-          ctx.globalAlpha = 0.85 * a * flick;
-          dot(d.x, d.y, r);
+          dot(d.x, d.y, r, 0.85 * a * flick);
         }
         if (!ds.length && t > fadeAt[i]) textK = 1;
         if (t > fadeAt[i]) chars[i].style.opacity = String(Math.min(1, textK * 1.25));
       }
+      flush();
       ctx.globalAlpha = 1;
       raf = requestAnimationFrame(frame);
     };
