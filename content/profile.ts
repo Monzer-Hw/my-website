@@ -6,7 +6,6 @@ export const profile: Profile = {
   intro:
     "AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.",
   location: { city: "Düsseldorf area", country: "Germany" },
-  focus: { title: "LLMs, RAG, MLOps", detail: "Plus computer vision and n8n" },
   statement:
     "I build AI systems that companies can actually run: retrieval over messy documents, LLM services with clear contracts, and automations that save people real hours.",
   bio: [

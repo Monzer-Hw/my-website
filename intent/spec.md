@@ -44,8 +44,7 @@ added under `/de/...` so no existing link breaks.
    button instead of section links; GitHub and LinkedIn move into the
    menu below 560px.
 2. **Hero**: name, one-line intro, buttons "See my work" (to Projects)
-   and "Get in touch" (to Contact), photo, and a facts row: location,
-   focus areas, availability status.
+   and "Get in touch" (to Contact), and photo.
 3. **Projects**: one row per project (see 3.3).
 4. **About**: one statement and at most two short paragraphs.
 5. **Experience**: roles, newest first; each with dates, location,
@@ -95,9 +94,8 @@ downloaded by the Resume button. It contains no home address and no
 phone number.
 
 ### 3.6 Availability status
-One status ("Open to work: roles and freelance projects") is defined
-once in the content files and shown in the hero facts and the Contact
-section.
+One status sentence ("I'm open to new roles and freelance projects.") is
+defined once in the content files and shown in the Contact section.
 
 ### 3.7 Content and placeholders
 - All text and data live in content files (MDX or JSON) in the repo:
@@ -206,7 +204,7 @@ tools, not part of the site.
 | `ink-4` | `#9A9A96` | Decoration only, never text |
 | `line` / `line-2` | `#E8E8E6` / `#D4D4D1` | Dividers, borders |
 | `signal` | `#2F49D1` | Keyboard focus only |
-| `live` | `#2E9E5B` | "Current" and "open to work" dots only |
+| `live` | `#2E9E5B` | "Current" dots only |
 | `danger` | `#B3261E` | Form errors only |
 
 Light theme only in v1.
@@ -242,8 +240,8 @@ Light theme only in v1.
 - **Tags** ("exploring", "in progress"): 4px corners, thin border.
 
 ### 4.6 Section details
-- **Hero**: name and intro left, photo right, facts row across the
-  full width at the bottom. On phones: text, then facts, then photo.
+- **Hero**: name and intro left, photo right. On phones: text, then
+  photo.
 - **Projects**: title, status, video still and links in the left
   column, which stays in view while scrolling; description, decisions
   and tools on the right. Video stills are 16:9, with the duration
@@ -374,6 +372,7 @@ v1 is done when:
 | Ring behind the whole hero, looping | Ring that draws in once |
 | Dot sphere behind the hero, ring as fallback (after phase 9) | Halftone ring |
 | Intro revealed from dot blocks on load (after phase 9) | Static intro |
+| No facts row in the hero (after phase 9) | Location, focus and status row under the hero |
 | Project media in the left column | Large video above each description |
 | GitHub and LinkedIn in the header and under the form | List in the footer |
 | One-line footer | Footer with name block and social list |

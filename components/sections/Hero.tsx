@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { HeroSphere } from "@/components/hero/HeroSphere";
 import { IntroReveal } from "@/components/hero/IntroReveal";
 import { Photo } from "@/components/hero/Photo";
@@ -7,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { content } from "@/content";
 
 export function Hero() {
-  const { site, profile, status, sections } = content;
+  const { site, profile, sections } = content;
   const [first, ...rest] = site.name.split(" ");
 
   return (
@@ -37,28 +36,8 @@ export function Hero() {
           </div>
         </div>
 
-        <Photo className="order-3 desk:order-none" />
-
-        <ul className="order-2 grid list-none gap-3.5 border-t border-line pt-5 phone:grid-cols-3 phone:gap-x-7 phone:gap-y-5 desk:order-none desk:col-span-2">
-          <Fact icon={<Icon name="pin" className="mt-0.5 text-ink-3" />} title={profile.location.city} detail={profile.location.country} />
-          <Fact icon={<Icon name="layers" className="mt-0.5 text-ink-3" />} title={profile.focus.title} detail={profile.focus.detail} />
-          <Fact
-            icon={<span aria-hidden="true" className="mx-1 mt-1.5 block size-2 rounded-full bg-live" />}
-            title={status.title}
-            detail={status.detail}
-          />
-        </ul>
+        <Photo />
       </div>
     </section>
-  );
-}
-
-function Fact({ icon, title, detail }: { icon: ReactNode; title: string; detail: string }) {
-  return (
-    <li className="grid grid-cols-[16px_minmax(0,1fr)] content-start gap-x-2.5 text-sm leading-[1.4]">
-      <span className="row-span-2 flex">{icon}</span>
-      <strong className="font-medium text-ink">{title}</strong>
-      <span className="text-ink-3">{detail}</span>
-    </li>
   );
 }

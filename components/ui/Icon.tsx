@@ -9,8 +9,6 @@ const STROKE = {
   out: <><path d="M7 17 17 7" /><path d="M8 7h9v9" /></>,
   film: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m10 9 5 3-5 3z" /></>,
   code: <><path d="m8 8-4 4 4 4" /><path d="m16 8 4 4-4 4" /></>,
-  pin: <><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></>,
-  layers: <><path d="M12 3 3 8l9 5 9-5-9-5z" /><path d="m3 13 9 5 9-5" /></>,
   check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
 } as const;
 
