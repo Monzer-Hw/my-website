@@ -44,6 +44,11 @@ test.describe("home sections", () => {
     expect(dates).toEqual(
       content.experience.map((job) => formatRange(job.start, job.end, content.sections.experience.present)),
     );
+
+    // Newest first, checked on the rendered start dates (YYYY-MM sorts as text), not on content order.
+    const starts = await page.locator("#experience time").evaluateAll((els) => els.map((e) => e.getAttribute("datetime")));
+    expect(starts.length).toBeGreaterThan(0);
+    expect(starts).toEqual([...starts].sort().reverse());
   });
 
   // Sets its own viewport, so one Playwright project is enough.
