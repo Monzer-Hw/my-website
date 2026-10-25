@@ -46,7 +46,8 @@ added under `/de/...` so no existing link breaks.
    menu below 560px.
 2. **Hero**: one intro sentence that starts with the name ("I’m Monzer
    Hweit, an AI engineer building…"; it is the page heading, at intro
-   size, at most 140 characters), buttons "See my work" (to Projects)
+   size, at most 140 characters, with the name in bold ink), buttons
+   "See my work" (to Projects)
    and "Get in touch" (to Contact), and photo.
 3. **Projects**: one row per project (see 3.3).
 4. **About**: one statement and at most two short paragraphs.
