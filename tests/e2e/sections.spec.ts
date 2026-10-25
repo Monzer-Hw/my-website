@@ -58,7 +58,7 @@ test.describe("home sections", () => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto("/");
       // The hero intro adds and removes its own canvas: measure once it has finished.
-      await expect(page.locator("section[aria-labelledby='name'] p[data-state]")).toHaveAttribute(
+      await expect(page.locator("section[aria-labelledby='name'] h1[data-state]")).toHaveAttribute(
         "data-state",
         "done",
         { timeout: 10_000 },

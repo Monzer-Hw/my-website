@@ -53,8 +53,14 @@ describe("content schema", () => {
 
   it("rejects an intro longer than 140 characters", () => {
     const c = raw();
-    c.profile.intro = "x".repeat(141);
+    c.profile.intro = `I’m ${c.site.name}, ${"x".repeat(140)}`;
     expect(issues(c)).toEqual([expect.stringMatching(/^profile\.intro:/)]);
+  });
+
+  it("rejects an intro without the name (it is the page heading)", () => {
+    const c = raw();
+    c.profile.intro = "An AI engineer building retrieval systems.";
+    expect(issues(c)).toEqual([`profile.intro: Intro must contain the name "${c.site.name}"`]);
   });
 
   it("requires captions for every demo video", () => {

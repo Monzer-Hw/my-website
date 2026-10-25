@@ -129,7 +129,7 @@ first CI run scored Lighthouse performance 0.72 (total blocking time
 1.5–3.2 s): CI and Lighthouse have no GPU, so every frame ran on the CPU.
 Settings, position and timing follow the artifact; dots behind the text
 column are fainter, and on phones the sphere sits where the ring did
-(behind the name and intro).
+(behind the intro).
 `components/hero/IntroReveal.tsx` reveals the intro from dot blocks once
 fonts are ready (at most 1.2 s wait); the text is server-rendered, a
 visually hidden copy serves screen readers, and the canvas exists only
