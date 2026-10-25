@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { HalftoneRing } from "@/components/hero/HalftoneRing";
+import { HeroSphere } from "@/components/hero/HeroSphere";
 import { Photo } from "@/components/hero/Photo";
 import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -14,7 +14,7 @@ export function Hero() {
       aria-labelledby="name"
       className="relative overflow-hidden pt-[clamp(40px,6vw,88px)] pb-[clamp(56px,7vw,96px)]"
     >
-      <HalftoneRing />
+      <HeroSphere />
       <div className="wrap relative grid grid-cols-1 items-center gap-12 desk:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
         <div>
           <h1
