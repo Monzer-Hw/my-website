@@ -78,9 +78,9 @@ test.describe("hero background fallback", () => {
 });
 
 test.describe("hero intro", () => {
-  const intro = (page: Page) => page.locator("section[aria-labelledby='name'] p[data-state]");
+  const intro = (page: Page) => page.locator("section[aria-labelledby='name'] h1[data-state]");
   const sentence =
-    "AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.";
+    "I’m Monzer Hweit, an AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.";
 
   test("reveals the text from dots, then leaves plain text", async ({ page }) => {
     await page.goto("/");
@@ -96,6 +96,14 @@ test.describe("hero intro", () => {
     await page.goto("/");
     await expect(intro(page).locator(".sr-only")).toHaveText(sentence);
     await expect(intro(page).locator('[aria-hidden="true"]').first()).toBeAttached();
+  });
+
+  test("shows the name in bold", async ({ page }) => {
+    await page.goto("/");
+    const bold = await intro(page)
+      .locator("[data-c]")
+      .evaluateAll((els) => els.filter((e) => getComputedStyle(e).fontWeight === "600").map((e) => e.textContent).join(""));
+    expect(bold).toBe("Monzer Hweit");
   });
 
   test("is skipped for reduced motion", async ({ page }) => {

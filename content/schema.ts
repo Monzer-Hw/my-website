@@ -153,6 +153,10 @@ export const contentSchema = z
     stack: z.array(stackGroupSchema).min(1),
   })
   .superRefine((content, ctx) => {
+    // The intro is the page heading, so it has to carry the name.
+    if (!content.profile.intro.includes(content.site.name)) {
+      ctx.addIssue({ code: "custom", message: `Intro must contain the name "${content.site.name}"`, path: ["profile", "intro"] });
+    }
     const ids = new Set<string>();
     content.projects.forEach((p, i) => {
       if (ids.has(p.id)) {

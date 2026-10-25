@@ -5,7 +5,8 @@ test.describe("home page", () => {
   test("renders the main heading in English", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Monzer Hweit");
+    // The intro sentence is the heading; its name comes from the screen-reader copy.
+    await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(/^I’m Monzer Hweit, an AI engineer/);
   });
 
   test("never scrolls sideways", async ({ page }) => {
