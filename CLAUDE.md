@@ -64,11 +64,9 @@ in `scripts/git-hooks.mjs`.
 - `components/contact/`: `ContactForm` (validation, sending, success and
   error states, honeypot), `CopyButton`
 - `app/api/contact/route.ts`: the only server code; validates, drops spam,
-  emails through Resend. Stores nothing; never logs personal data
-- `vercel.json`: functions run in Frankfurt (`fra1`). The contact rate
-  limit (5 POSTs per IP per 10 min, then 429) is a Vercel Firewall rule
-  on the project, not in the repo
-- `content/`: all site text and data (see Content below)
+  emails through Resend
+- `vercel.json`: functions run in Frankfurt (`fra1`)
+- `content/`: all site text and data (rules in `.claude/rules/content.md`)
 - `lib/cn.ts`: class names; `lib/placeholders.ts`: launch guard;
   `lib/dates.ts`: `YYYY-MM` formatting; `lib/contact.ts`: form rules and
   spam checks shared by form and server; `lib/email.ts`: Resend HTTP API
@@ -76,29 +74,6 @@ in `scripts/git-hooks.mjs`.
 - `scripts/`: `git-hooks.mjs` (checks for the git hooks); more in later
   phases (see plan section 2)
 - `tests/unit/`: Vitest; `tests/e2e/`: Playwright
-
-## Tokens (use these, never raw values)
-Colors `bg surface ink ink-2 ink-3 ink-4 line line-2 signal live danger`
-(e.g. `text-ink-3`, `bg-surface`), plus `poster poster-2 poster-line
-poster-ink poster-text` for the dark video stills only; radii `rounded-tag|ctl|media|card|photo`;
-breakpoints `phone:` (560px) and `desk:` (900px); `wrap` utility for the
-page column; spacing `h-header`, `py-section`, `px-gutter`.
-
-## Content
-- Files: `site.ts` (name, nav, links), `sections.ts` (headings,
-  ledes, button and form labels), `profile.ts`, `status.ts`,
-  `projects.ts`, `experience.ts`, `stack.ts`; rules in `schema.ts`
-  (Zod, limits from spec 3.2–3.8).
-- Components import `content` from `@/content` (validated at build).
-  Invalid content fails `next build` with the field path.
-- Entries marked `placeholder: true` are stand-ins. With
-  `VERCEL_ENV=production` the build fails while any remain (spec 3.7);
-  previews and local builds pass. Remove the flag only with real content.
-
-## Next.js 16 gotchas
-- `cacheComponents` is on: `new Date()`, `Math.random()` and similar
-  fail the prerender. Put them in a `"use cache"` function with an
-  explicit `cacheLife(...)`, or in a Client Component.
 
 ## Rules
 - Follow the spec. If the build must deviate, update `intent/plan.md`
@@ -108,9 +83,4 @@ page column; spacing `h-header`, `py-section`, `px-gutter`.
   and in your final reply point out each inconsistency you found
   between the docs and the code. The intent files (`intent/*.md`) are
   still the source of truth for what to build.
-- All site text and data live in `content/`, never hard-coded in
-  components.
-- No cookies, trackers or third-party requests on page load (spec 3.9).
 - Never commit secrets; `.env.example` lists the variable names.
-- Light theme only; colors, type and spacing come from the tokens in
-  `app/globals.css`.
