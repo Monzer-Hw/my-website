@@ -23,6 +23,7 @@ TypeScript 5, Tailwind CSS 4 (via `@tailwindcss/turbopack` in
 | Typecheck | `npm run typecheck` |
 | Lint | `npm run lint` |
 | Unit tests (Vitest) | `npm test` |
+| Unit tests with coverage (thresholds enforced) | `npm run test:coverage` |
 | Production build | `npm run build` |
 | E2E + accessibility (Playwright, axe) | `npm run build && npm run test:e2e` |
 
