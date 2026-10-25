@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { HeroSphere } from "@/components/hero/HeroSphere";
+import { IntroReveal } from "@/components/hero/IntroReveal";
 import { Photo } from "@/components/hero/Photo";
 import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -23,9 +24,10 @@ export function Hero() {
           >
             <span className="block">{first}</span> <span className="block">{rest.join(" ")}</span>
           </h1>
-          <p className="mt-8 max-w-[30ch] text-[clamp(1.25rem,1.05rem+0.7vw,1.625rem)] leading-[1.35] tracking-[-0.015em] text-ink-2">
-            {profile.intro}
-          </p>
+          <IntroReveal
+            text={profile.intro}
+            className="mt-8 max-w-[30ch] text-[clamp(1.25rem,1.05rem+0.7vw,1.625rem)] leading-[1.35] tracking-[-0.015em] text-ink-2"
+          />
           <div className="mt-8 flex flex-wrap gap-2.5">
             <ButtonLink href="#projects">{sections.hero.primaryCta}</ButtonLink>
             <ButtonLink href="#contact" variant="soft">
