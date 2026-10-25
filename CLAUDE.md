@@ -103,6 +103,11 @@ page column; spacing `h-header`, `py-section`, `px-gutter`.
 ## Rules
 - Follow the spec. If the build must deviate, update `intent/plan.md`
   (or the spec) in the same commit.
+- When descriptive docs (this file, `AGENTS.md`, code comments) and the
+  existing code disagree, follow the conventions in the existing code,
+  and in your final reply point out each inconsistency you found
+  between the docs and the code. The intent files (`intent/*.md`) are
+  still the source of truth for what to build.
 - All site text and data live in `content/`, never hard-coded in
   components.
 - No cookies, trackers or third-party requests on page load (spec 3.9).
