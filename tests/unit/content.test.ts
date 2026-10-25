@@ -23,31 +23,31 @@ describe("content schema", () => {
 
   it("rejects a project with more than three decisions", () => {
     const c = raw();
-    c.projects[0].decisions.push({ topic: "Extra", text: "One decision too many." });
+    while (c.projects[0].decisions.length < 4) c.projects[0].decisions.push({ topic: "Extra", text: "One decision too many." });
     expect(issues(c)).toEqual([expect.stringMatching(/^projects\.0\.decisions:/)]);
   });
 
   it("rejects a job with more than three results", () => {
     const c = raw();
-    c.experience[0].results.push("Second extra result.", "Third extra result.");
+    while (c.experience[0].results.length < 4) c.experience[0].results.push("An extra result.");
     expect(issues(c)).toEqual([expect.stringMatching(/^experience\.0\.results:/)]);
   });
 
   it("rejects a stack group that points at an unknown project", () => {
     const c = raw();
-    c.stack[0].usedIn.push("no-such-project");
-    expect(issues(c)).toEqual(['stack.0.usedIn.2: Unknown project id "no-such-project" in stack group "Language models and retrieval"']);
+    const index = c.stack[0].usedIn.push("no-such-project") - 1;
+    expect(issues(c)).toEqual([`stack.0.usedIn.${index}: Unknown project id "no-such-project" in stack group "${c.stack[0].title}"`]);
   });
 
   it("rejects duplicate project ids", () => {
     const c = raw();
     c.projects[1].id = c.projects[0].id;
-    expect(issues(c)).toContain('projects.1.id: Duplicate project id "rag-pipeline"');
+    expect(issues(c)).toContain(`projects.1.id: Duplicate project id "${c.projects[0].id}"`);
   });
 
   it("rejects a bio longer than two paragraphs", () => {
     const c = raw();
-    c.profile.bio.push("A third paragraph.");
+    while (c.profile.bio.length < 3) c.profile.bio.push("An extra paragraph.");
     expect(issues(c)).toEqual([expect.stringMatching(/^profile\.bio:/)]);
   });
 
@@ -65,14 +65,16 @@ describe("content schema", () => {
 
   it("requires captions for every demo video", () => {
     const c = raw();
-    const video = c.projects[0].links.video as { captions?: string };
+    const index = c.projects.findIndex((p) => p.links.video);
+    expect(index).toBeGreaterThanOrEqual(0);
+    const video = c.projects[index].links.video as { captions?: string };
     delete video.captions;
-    expect(issues(c)).toEqual([expect.stringMatching(/^projects\.0\.links\.video\.captions:/)]);
+    expect(issues(c)).toEqual([expect.stringMatching(new RegExp(`^projects\\.${index}\\.links\\.video\\.captions:`))]);
   });
 
   it("rejects dates that are not YYYY-MM", () => {
     const c = raw();
-    c.experience[1].start = "April 2024";
-    expect(issues(c)).toEqual(["experience.1.start: Use YYYY-MM"]);
+    c.experience[0].start = "April 2024";
+    expect(issues(c)).toEqual(["experience.0.start: Use YYYY-MM"]);
   });
 });

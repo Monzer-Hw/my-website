@@ -1,13 +1,7 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { expectNoAxeViolations } from "./helpers";
 
-const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 const isDesktop = (page: Page) => (page.viewportSize()?.width ?? 0) >= 900;
-
-async function expectNoAxeViolations(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(WCAG).analyze();
-  expect(results.violations).toEqual([]);
-}
 
 test.describe("page frame", () => {
   test("desktop shows section links and hides the menu button", async ({ page }) => {
@@ -57,6 +51,18 @@ test.describe("page frame", () => {
     await page.goto("/");
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
+    // The ring must be the signal token: a probe styled with the token gives its computed rgb value.
+    const signal = await page.evaluate(() => {
+      const probe = document.createElement("span");
+      probe.style.color = "var(--color-signal, transparent)";
+      document.body.append(probe);
+      const color = getComputedStyle(probe).color;
+      probe.remove();
+      return color;
+    });
+    // A missing token falls back to transparent, so the test fails instead of matching a stray color.
+    expect(signal).toMatch(/^rgb\(/);
+    expect(signal).not.toBe("rgba(0, 0, 0, 0)");
     // Polled: links with `transition-colors` fade the outline color in over 0.2s.
     await expect
       .poll(() =>
@@ -65,7 +71,7 @@ test.describe("page frame", () => {
           return { style: s.outlineStyle, width: s.outlineWidth, color: s.outlineColor };
         }),
       )
-      .toEqual({ style: "solid", width: "2px", color: "rgb(47, 73, 209)" });
+      .toEqual({ style: "solid", width: "2px", color: signal });
   });
 
   test("loads nothing from other sites (font is self-hosted)", async ({ page, baseURL }) => {
@@ -84,10 +90,5 @@ test.describe("page frame", () => {
     const legal = page.getByRole("navigation", { name: "Legal" });
     await expect(legal.getByRole("link", { name: "Impressum" })).toHaveAttribute("href", "/impressum");
     await expect(legal.getByRole("link", { name: "Datenschutz" })).toHaveAttribute("href", "/datenschutz");
-  });
-
-  test("has no detectable accessibility violations", async ({ page }) => {
-    await page.goto("/");
-    await expectNoAxeViolations(page);
   });
 });

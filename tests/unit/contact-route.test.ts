@@ -44,6 +44,8 @@ describe("POST /api/contact", () => {
   it("answers 400 to a body that is not JSON", async () => {
     const res = await post("not json");
     expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ ok: false, error: "invalid", fields: [] });
+    expect(send).not.toHaveBeenCalled();
   });
 
   it("pretends success for spam and sends nothing", async () => {
@@ -62,6 +64,15 @@ describe("POST /api/contact", () => {
     const logged = log.mock.calls.flat().join(" ");
     expect(logged).not.toContain("jane@company.com");
     expect(logged).not.toContain("Jane Doe");
+    log.mockRestore();
+  });
+
+  it("logs only the reason when the failure has no provider status", async () => {
+    send.mockResolvedValue({ ok: false, reason: "config" });
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    const res = await post(valid);
+    expect(res.status).toBe(502);
+    expect(log).toHaveBeenCalledWith("contact: email not sent (config)");
     log.mockRestore();
   });
 });
