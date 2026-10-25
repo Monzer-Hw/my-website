@@ -26,10 +26,21 @@ TypeScript 5, Tailwind CSS 4 (via `@tailwindcss/turbopack` in
 | Unit tests with coverage (thresholds enforced) | `npm run test:coverage` |
 | Production build | `npm run build` |
 | E2E + accessibility (Playwright, axe) | `npm run build && npm run test:e2e` |
+| Full local check before a PR (lint, typecheck, coverage, build, e2e) | `npm run verify` |
 
 First run of e2e tests needs a browser: `npx playwright install chromium`.
 CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
 (`lighthouserc.json`: performance ≥ 0.95, accessibility 1.0, mobile).
+
+## Git hooks
+`lefthook.yml`, installed by `npm install`/`npm ci` (not in CI); checks
+in `scripts/git-hooks.mjs`.
+- Commit: refused on `main`, with a staged `.env*` file other than
+  `.env.example`, or when ESLint fails on the staged files.
+- Commit message: must follow `.claude/rules/git-conventions.md`.
+- Push: `npm run typecheck` and `npm run test:coverage`.
+- `npm run verify` is the full local check; run it before opening a PR.
+- Skipping hooks (`--no-verify`, `LEFTHOOK=0`) needs the owner's approval.
 
 ## Layout
 - `app/`: routes, root layout (font, skip link, header, footer),
@@ -60,7 +71,8 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
   `lib/dates.ts`: `YYYY-MM` formatting; `lib/contact.ts`: form rules and
   spam checks shared by form and server; `lib/email.ts`: Resend HTTP API
   (no SDK), env vars in `.env.example`
-- `scripts/`: added in later phases (see plan section 2)
+- `scripts/`: `git-hooks.mjs` (checks for the git hooks); more in later
+  phases (see plan section 2)
 - `tests/unit/`: Vitest; `tests/e2e/`: Playwright
 
 ## Tokens (use these, never raw values)

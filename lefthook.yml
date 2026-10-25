@@ -1,0 +1,25 @@
+# Local git hooks. The lefthook npm package installs them on `npm install`
+# and `npm ci` (not when CI is set). Skipping them needs the owner's approval.
+# `npm run verify` is the full local check before a PR.
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: branch and env files
+      run: node scripts/git-hooks.mjs pre-commit
+    - name: eslint
+      glob: "*.{ts,tsx,mjs,js}"
+      run: npx --no -- eslint --no-warn-ignored {staged_files}
+
+commit-msg:
+  jobs:
+    - name: commit message
+      run: node scripts/git-hooks.mjs commit-msg {1}
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: typecheck
+      run: npm run typecheck
+    - name: unit tests with coverage
+      run: npm run test:coverage

@@ -182,6 +182,7 @@ New project at the repo root; `intent/` stays as is.
 | `tests/e2e/*.spec.ts` | Playwright: sections, navigation, mobile menu, form, video click-to-load, axe |
 | `lighthouserc.json` | Lighthouse CI thresholds (performance ≥95, accessibility 100, mobile) |
 | `.github/workflows/ci.yml` | Typecheck, lint, unit, build, e2e with axe, Lighthouse on every PR |
+| `lefthook.yml`, `scripts/git-hooks.mjs` | Local git hooks (lefthook, installed by `npm install`): branch, env file, ESLint and commit message checks on commit; typecheck and unit coverage on push |
 | `.env.example` | `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM` (no secrets committed) |
 
 ## 3. Order of work
@@ -231,5 +232,8 @@ in section 5.
   pass in CI.
 - Unit coverage thresholds (`npm run test:coverage`) must hold; they
   only go up.
+- Local git hooks catch most of this before CI: commit rules and ESLint
+  on commit, typecheck and unit coverage on push. `npm run verify` runs
+  the full set (with build and e2e) before a PR.
 - Each phase's proof from section 3 is shown in its PR description.
 - v1 is done when all acceptance criteria in spec section 9 are checked.
