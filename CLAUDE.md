@@ -7,7 +7,13 @@ before changing anything:
 - `intent/plan.md`: build phases, files, risks, proof (accepted)
 - `intent/design-reference.html`: the agreed design, placeholder content
 
-Version control rules live in `.claude/rules/git-conventions.md`.
+Topic rules live in `.claude/rules/`. Files with `paths:` load only
+when Claude works on matching files:
+- `git-conventions.md`: branches, commits, PRs, git hooks (always)
+- `design.md`: theme, tokens, spec section 4 pointers (UI files)
+- `content.md`: where text lives, placeholders (content and UI files)
+- `nextjs.md`: Next.js 16 gotchas (`app/`, `components/`, `lib/`)
+- `privacy.md`: privacy and legal, spec 3.9 and 3.10 (app code, config)
 
 @AGENTS.md
 
@@ -31,18 +37,6 @@ TypeScript 5, Tailwind CSS 4 (via `@tailwindcss/turbopack` in
 First run of e2e tests needs a browser: `npx playwright install chromium`.
 CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
 (`lighthouserc.json`: performance ≥ 0.95, accessibility 1.0, mobile).
-
-## Git hooks
-`lefthook.yml`, installed by `npm install`/`npm ci` (not in CI); checks
-in `scripts/git-hooks.mjs`.
-- Commit: refused on `main`, with a staged `.env*` file other than
-  `.env.example`, or when ESLint fails on the staged files.
-- Commit message: must follow `.claude/rules/git-conventions.md`; also
-  refused on `main` (covers empty and merge commits, where pre-commit
-  does not run).
-- Push: `npm run typecheck` and `npm run test:coverage`.
-- `npm run verify` is the full local check; run it before opening a PR.
-- Skipping hooks (`--no-verify`, `LEFTHOOK=0`) needs the owner's approval.
 
 ## Layout
 - `app/`: routes, root layout (font, skip link, header, footer),
@@ -78,9 +72,10 @@ in `scripts/git-hooks.mjs`.
 ## Rules
 - Follow the spec. If the build must deviate, update `intent/plan.md`
   (or the spec) in the same commit.
-- When descriptive docs (this file, `AGENTS.md`, code comments) and the
-  existing code disagree, follow the conventions in the existing code,
-  and in your final reply point out each inconsistency you found
-  between the docs and the code. The intent files (`intent/*.md`) are
-  still the source of truth for what to build.
+- When descriptive docs (this file, `AGENTS.md`, `.claude/rules/`,
+  code comments) and the existing code disagree, follow the
+  conventions in the existing code, and in your final reply point out
+  each inconsistency you found between the docs and the code. The
+  intent files (`intent/*.md`) are still the source of truth for what
+  to build.
 - Never commit secrets; `.env.example` lists the variable names.
