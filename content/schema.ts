@@ -29,7 +29,6 @@ export const profileSchema = z.object({
   placeholder,
   intro: text.max(140),
   location: z.object({ city: text, country: text }),
-  focus: z.object({ title: text, detail: text }),
   statement: text,
   bio: z.array(text).min(1).max(2),
   email: z.email(),
@@ -39,8 +38,6 @@ export const profileSchema = z.object({
 
 export const statusSchema = z.object({
   placeholder,
-  title: text,
-  detail: text,
   sentence: text,
 });
 
