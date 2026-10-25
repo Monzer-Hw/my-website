@@ -66,4 +66,13 @@ describe("POST /api/contact", () => {
     expect(logged).not.toContain("Jane Doe");
     log.mockRestore();
   });
+
+  it("logs only the reason when the failure has no provider status", async () => {
+    send.mockResolvedValue({ ok: false, reason: "config" });
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    const res = await post(valid);
+    expect(res.status).toBe(502);
+    expect(log).toHaveBeenCalledWith("contact: email not sent (config)");
+    log.mockRestore();
+  });
 });
