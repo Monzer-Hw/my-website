@@ -16,8 +16,8 @@ import { HalftoneRing } from "./HalftoneRing";
 // Tunables (from the owner's design artifact)
 const DOT = 1.3; // dot size in CSS px
 const INK = 0.22; // opacity of a single dot; overlaps darken
-const FLOW = 0.11; // how fast the ribbons change
-const SPIN = 0.045; // rotation speed, radians per second
+const FLOW = 0.14; // how fast the ribbons change
+const SPIN = 0.055; // rotation speed, radians per second
 const FOLD = 0.62; // how strongly dots bunch into ribbons
 const INTRO_S = 1.6; // dots fade in over this many seconds
 
@@ -138,7 +138,7 @@ export function HeroSphere() {
 
     // Evenly spread points on a unit sphere (Fibonacci lattice), each with a seed for the fade-in.
     // A deterministic seed keeps renders identical between visits.
-    const count = window.innerWidth < 900 ? 32000 : 70000;
+    const count = window.innerWidth < 900 ? 38000 : 85000;
     const data = new Float32Array(count * 4);
     const golden = Math.PI * (3 - Math.sqrt(5));
     for (let i = 0; i < count; i++) {
