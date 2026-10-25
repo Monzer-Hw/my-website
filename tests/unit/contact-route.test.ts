@@ -44,6 +44,8 @@ describe("POST /api/contact", () => {
   it("answers 400 to a body that is not JSON", async () => {
     const res = await post("not json");
     expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ ok: false, error: "invalid", fields: [] });
+    expect(send).not.toHaveBeenCalled();
   });
 
   it("pretends success for spam and sends nothing", async () => {
