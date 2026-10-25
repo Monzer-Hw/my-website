@@ -39,8 +39,9 @@ URLs stay English and unprefixed. When the German version comes, it is
 added under `/de/...` so no existing link breaks.
 
 ### 3.2 Home page sections, in order
-1. **Header** (sticky): name with "MH" mark (links to top), section
-   links, GitHub and LinkedIn icons, Resume button. Below 900px: menu
+1. **Header** (sticky): section links on the left, GitHub and LinkedIn
+   icons and Resume button on the right; no name or "MH" mark (the hero
+   carries the name). Below 900px: menu
    button instead of section links; GitHub and LinkedIn move into the
    menu below 560px.
 2. **Hero**: name, one-line intro, buttons "See my work" (to Projects)
@@ -373,6 +374,7 @@ v1 is done when:
 | Dot sphere behind the hero, ring as fallback (after phase 9) | Halftone ring |
 | Intro revealed from dot blocks on load (after phase 9) | Static intro |
 | No facts row in the hero (after phase 9) | Location, focus and status row under the hero |
+| No name or "MH" mark in the header (after phase 9) | Name with mark linking home |
 | Project media in the left column | Large video above each description |
 | GitHub and LinkedIn in the header and under the form | List in the footer |
 | One-line footer | Footer with name block and social list |
