@@ -1,7 +1,8 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { content } from "@/content";
+import { expectNoAxeViolations } from "./helpers";
 
-const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+const { name, role, description } = content.site;
 
 test.describe("legal pages", () => {
   for (const [label, path, heading] of [
@@ -15,9 +16,8 @@ test.describe("legal pages", () => {
       // Next.js 16 (cacheComponents) keeps the previous page mounted but hidden, so match visible elements only.
       await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
       await expect(page.locator('article[lang="de"]')).toBeVisible();
-      await expect(page).toHaveTitle(`${heading} – Monzer Hweit`);
-      const results = await new AxeBuilder({ page }).withTags(WCAG).analyze();
-      expect(results.violations).toEqual([]);
+      await expect(page).toHaveTitle(`${heading} – ${name}`);
+      await expectNoAxeViolations(page);
     });
   }
 
@@ -43,10 +43,10 @@ test.describe("not found", () => {
 test.describe("link previews and search", () => {
   test("the home page has title, description and preview tags", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveTitle("Monzer Hweit – AI Engineer");
+    await expect(page).toHaveTitle(`${name} – ${role}`);
     const meta = (selector: string) => page.locator(selector).getAttribute("content");
-    expect(await meta('meta[name="description"]')).toMatch(/^AI engineer building/);
-    expect(await meta('meta[property="og:title"]')).toBe("Monzer Hweit – AI Engineer");
+    expect(await meta('meta[name="description"]')).toBe(description);
+    expect(await meta('meta[property="og:title"]')).toBe(`${name} – ${role}`);
     expect(await meta('meta[property="og:image"]')).toMatch(/\/opengraph-image/);
     expect(await meta('meta[property="og:image:width"]')).toBe("1200");
     expect(await meta('meta[name="twitter:card"]')).toBe("summary_large_image");
@@ -68,9 +68,9 @@ test.describe("link previews and search", () => {
     const json = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
     expect(json).toMatchObject({
       "@type": "Person",
-      name: "Monzer Hweit",
-      jobTitle: "AI Engineer",
-      sameAs: ["https://github.com/Monzer-Hw", "https://www.linkedin.com/in/monzer-hweit"],
+      name,
+      jobTitle: role,
+      sameAs: content.site.social.map((s) => s.href),
     });
   });
 
