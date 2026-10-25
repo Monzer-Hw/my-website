@@ -54,13 +54,15 @@ test.describe("page frame", () => {
     // The ring must be the signal token: a probe styled with the token gives its computed rgb value.
     const signal = await page.evaluate(() => {
       const probe = document.createElement("span");
-      probe.style.color = "var(--color-signal)";
+      probe.style.color = "var(--color-signal, transparent)";
       document.body.append(probe);
       const color = getComputedStyle(probe).color;
       probe.remove();
       return color;
     });
+    // A missing token falls back to transparent, so the test fails instead of matching a stray color.
     expect(signal).toMatch(/^rgb\(/);
+    expect(signal).not.toBe("rgba(0, 0, 0, 0)");
     // Polled: links with `transition-colors` fade the outline color in over 0.2s.
     await expect
       .poll(() =>
