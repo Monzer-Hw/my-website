@@ -122,20 +122,26 @@ verified through the Vercel API.
 Deviations recorded after phase 9 (owner-revised hero, from the owner's
 design artifact): `components/hero/HeroSphere.tsx` draws a WebGL sphere
 of 70,000 dots (32,000 on narrow screens) that folds into ribbons; it
-replaces the sweep ring, which stays as the fallback without WebGL.
+replaces the sweep ring, which stays as the fallback without WebGL and
+when WebGL is software-rendered (renderer name SwiftShader, llvmpipe or
+similar: no GPU or hardware acceleration off). Without that check the
+first CI run scored Lighthouse performance 0.72 (total blocking time
+1.5–3.2 s): CI and Lighthouse have no GPU, so every frame ran on the CPU.
 Settings, position and timing follow the artifact; dots behind the text
 column are fainter, and on phones the sphere sits where the ring did
 (behind the name and intro) so the small fact lines stay clear.
 `components/hero/IntroReveal.tsx` reveals the intro from dot blocks once
 fonts are ready (at most 1.2 s wait); the text is server-rendered, a
 visually hidden copy serves screen readers, and the canvas exists only
-during the ~2 s animation. Both report `data-state` for the tests; the
-sphere also reports `data-frames`. Measured in headless Chromium with the
-sphere running: about 60 fps on desktop and phone layouts at full speed,
-42–46 fps with the CPU slowed 4x (the ring test's draw-time budget no
-longer applies: the work is on the GPU, which headless Chromium may
-emulate in software). Spec 4.7's 60 fps goal is checked on a real
-mid-range phone on the preview before merging.
+during the ~2 s animation; its dots are filled in 16 opacity groups per
+frame, not one by one, to keep frames short on slow phones. Both report
+`data-state` for the tests; the sphere also reports `data-frames`. The
+e2e tests report a hardware GPU name so the sphere runs in CI, and check
+both fallbacks. Measured in headless Chromium (software-rendered, so a
+worst case): about 60 fps on desktop and phone layouts at full speed,
+42–46 fps with the CPU slowed 4x. Because Lighthouse now sees the ring,
+spec 4.7's 60 fps goal for the sphere is checked on a real mid-range
+phone on the preview before merging.
 
 ## 2. Files
 New project at the repo root; `intent/` stays as is.

@@ -3,7 +3,22 @@ import { expect, test, type Page } from "@playwright/test";
 // The hero background is the WebGL dot sphere, or the 2D halftone ring where WebGL is missing.
 const bg = (page: Page) => page.locator("section[aria-labelledby='name'] [data-hero-bg]");
 
+/** Reports `name` as the WebGL renderer. Headless Chromium renders in software (SwiftShader). */
+const renderer = (page: Page, name: string) =>
+  page.addInitScript((gpu) => {
+    const original = WebGLRenderingContext.prototype.getParameter;
+    const RENDERER = 0x1f01;
+    const UNMASKED_RENDERER_WEBGL = 0x9246;
+    WebGLRenderingContext.prototype.getParameter = function (p: number) {
+      return p === RENDERER || p === UNMASKED_RENDERER_WEBGL ? gpu : original.call(this, p);
+    };
+  }, name);
+
 test.describe("hero background", () => {
+  test.beforeEach(async ({ page }) => {
+    await renderer(page, "ANGLE (Test GPU)");
+  });
+
   test("renders the dot sphere and keeps animating while the hero is visible", async ({ page }) => {
     await page.goto("/");
     await expect(bg(page)).toHaveAttribute("data-hero-bg", "sphere");
@@ -37,8 +52,10 @@ test.describe("hero background", () => {
     });
     await expect(bg(page)).toHaveAttribute("data-state", "paused");
   });
+});
 
-  test("falls back to the halftone ring without WebGL", async ({ page }) => {
+test.describe("hero background fallback", () => {
+  test("shows the halftone ring without WebGL", async ({ page }) => {
     await page.addInitScript(() => {
       const original = HTMLCanvasElement.prototype.getContext;
       // @ts-expect-error -- simulating a browser without WebGL
@@ -47,6 +64,13 @@ test.describe("hero background", () => {
         return original.call(this, type, ...rest);
       };
     });
+    await page.goto("/");
+    await expect(bg(page)).toHaveAttribute("data-hero-bg", "ring");
+    await expect(bg(page)).toHaveAttribute("data-state", "running");
+  });
+
+  test("shows the halftone ring when WebGL is software-rendered", async ({ page }) => {
+    await renderer(page, "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero)), SwiftShader driver)");
     await page.goto("/");
     await expect(bg(page)).toHaveAttribute("data-hero-bg", "ring");
     await expect(bg(page)).toHaveAttribute("data-state", "running");

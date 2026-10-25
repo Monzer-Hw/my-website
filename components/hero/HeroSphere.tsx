@@ -9,7 +9,7 @@ import { HalftoneRing } from "./HalftoneRing";
  * - Static frame for visitors who prefer reduced motion.
  * - Paused while the hero is off screen or the tab is hidden; resumes where it left off.
  * - Dots are softened behind the text column so the copy stays readable.
- * - Without WebGL, falls back to the 2D halftone ring.
+ * - Without WebGL, or when WebGL is software-rendered, falls back to the 2D halftone ring.
  * `data-state` ("running" | "paused" | "static") and `data-frames` expose this to the tests.
  */
 
@@ -86,6 +86,23 @@ function hexToRgb(hex: string): [number, number, number] {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 }
 
+const SOFTWARE = /swiftshader|llvmpipe|softpipe|software|basic render/i;
+
+/**
+ * True when WebGL is drawn by the CPU (no GPU, or hardware acceleration turned off): this many
+ * dots then block the main thread for tens of milliseconds per frame, so the ring is used instead.
+ */
+function isSoftware(gl: WebGLRenderingContext) {
+  let name = String(gl.getParameter(gl.RENDERER));
+  // Chromium reports a generic name here and the real one through this extension;
+  // Firefox and Safari report it directly (Firefox warns when the extension is requested).
+  if (name === "WebKit WebGL") {
+    const ext = gl.getExtension("WEBGL_debug_renderer_info");
+    if (ext) name = String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL));
+  }
+  return SOFTWARE.test(name);
+}
+
 export function HeroSphere() {
   const ref = useRef<HTMLCanvasElement>(null);
   const [fallback, setFallback] = useState(false);
@@ -94,7 +111,8 @@ export function HeroSphere() {
     const canvas = ref.current;
     if (!canvas) return;
     const gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: true, antialias: false });
-    if (!gl) {
+    if (!gl || isSoftware(gl)) {
+      gl?.getExtension("WEBGL_lose_context")?.loseContext();
       setFallback(true);
       return;
     }

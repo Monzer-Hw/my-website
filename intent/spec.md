@@ -257,8 +257,8 @@ Light theme only in v1.
   ribbons, behind the whole hero, right of the name on desktop and
   behind the name and intro on phones. It **loops continuously**: slow
   and subtle, never competing with the text; dots behind the text column
-  are fainter. Where WebGL is missing, the halftone ring (sweep) shows
-  instead.
+  are fainter. Where WebGL is missing or runs without a GPU, the
+  halftone ring (sweep) shows instead.
   - It stays still when the visitor's system asks for reduced motion.
   - It pauses when the hero is off screen or the tab is hidden.
   - It must not drop the page below 60 frames per second on a
