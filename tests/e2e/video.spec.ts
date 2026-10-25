@@ -28,7 +28,9 @@ test.describe("project videos", () => {
     expect(external).toEqual([]);
   });
 
-  test("a missing video file shows a clear message instead of a broken player", async ({ page }) => {
+  test("a video that fails to load shows a clear message instead of a broken player", async ({ page }) => {
+    // Fail the request on purpose, so this does not depend on whether the file exists.
+    await page.route("**/videos/*.mp4", (route) => route.fulfill({ status: 404 }));
     await page.goto("/");
     await page.getByRole("button", { name: STILL }).click();
     const dialog = page.getByRole("dialog", { name: DIALOG });
