@@ -1,7 +1,9 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { content } from "@/content";
+import { expectNoAxeViolations } from "./helpers";
 
-const WCAG = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+const { email } = content.profile;
+const sendError = `Your message couldn't be sent. Please try again, or email me directly at ${email}.`;
 
 async function fillValidForm(page: Page) {
   const form = page.locator("#contact form");
@@ -40,10 +42,30 @@ test.describe("contact form sending (email step simulated)", () => {
     await page.goto("/");
     const form = await fillValidForm(page);
     await form.getByRole("button", { name: "Send message" }).click();
-    await expect(form.getByRole("status")).toHaveText(
-      "Your message couldn't be sent. Please try again, or email me directly at hello@example.com.",
-    );
+    await expect(form.getByRole("status")).toHaveText(sendError);
     await expect(form.getByLabel("Name")).toHaveValue("Jane Doe");
+  });
+
+  test("shows the same error and keeps the typed values when the network fails", async ({ page }) => {
+    await page.route("**/api/contact", (route) => route.abort());
+    await page.goto("/");
+    const form = await fillValidForm(page);
+    await form.getByRole("button", { name: "Send message" }).click();
+    await expect(form.getByRole("status")).toHaveText(sendError);
+    await expect(form.getByLabel("Name")).toHaveValue("Jane Doe");
+    await expect(form.getByLabel("Email")).toHaveValue("jane@company.com");
+    await expect(form.getByLabel("Message", { exact: true })).toHaveValue("Hello, I'd like to talk about a project.");
+    await expect(form.getByRole("checkbox")).toBeChecked();
+  });
+
+  test("shows the send error and keeps the typed values when the server answers 400", async ({ page }) => {
+    await page.route("**/api/contact", (route) => route.fulfill({ status: 400, json: { ok: false, error: "invalid" } }));
+    await page.goto("/");
+    const form = await fillValidForm(page);
+    await form.getByRole("button", { name: "Send message" }).click();
+    await expect(form.getByRole("status")).toHaveText(sendError);
+    await expect(form.getByLabel("Name")).toHaveValue("Jane Doe");
+    await expect(form.getByLabel("Message", { exact: true })).toHaveValue("Hello, I'd like to talk about a project.");
   });
 
   test("explains the rate limit when the firewall answers 429", async ({ page }) => {
@@ -52,7 +74,7 @@ test.describe("contact form sending (email step simulated)", () => {
     const form = await fillValidForm(page);
     await form.getByRole("button", { name: "Send message" }).click();
     await expect(form.getByRole("status")).toHaveText(
-      "You've sent several messages in a short time. Please wait a few minutes, or email me directly at hello@example.com.",
+      `You've sent several messages in a short time. Please wait a few minutes, or email me directly at ${email}.`,
     );
   });
 
@@ -80,7 +102,6 @@ test.describe("contact form sending (email step simulated)", () => {
     await page.goto("/");
     const honeypot = page.locator("#f-website");
     await expect(honeypot).toHaveAttribute("tabindex", "-1");
-    expect(await honeypot.boundingBox()).toMatchObject({ width: expect.any(Number) });
     const box = (await honeypot.boundingBox())!;
     expect(box.x + box.width).toBeLessThan(0); // positioned off screen
     await page.locator("#f-message").focus();
@@ -94,8 +115,7 @@ test.describe("contact form sending (email step simulated)", () => {
     const form = await fillValidForm(page);
     await form.getByRole("button", { name: "Send message" }).click();
     await expect(page.getByRole("heading", { name: "Message sent." })).toBeVisible();
-    const results = await new AxeBuilder({ page }).withTags(WCAG).analyze();
-    expect(results.violations).toEqual([]);
+    await expectNoAxeViolations(page);
   });
 });
 

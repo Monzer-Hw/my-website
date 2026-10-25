@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { content } from "@/content";
 
 // The hero background is the WebGL dot sphere, or the 2D halftone ring where WebGL is missing.
 const bg = (page: Page) => page.locator("section[aria-labelledby='name'] [data-hero-bg]");
@@ -43,14 +44,18 @@ test.describe("hero background", () => {
     await expect(bg(page)).toHaveAttribute("data-state", "running");
   });
 
-  test("pauses while the tab is hidden", async ({ page }) => {
+  test("pauses while the tab is hidden, resumes when it is visible again", async ({ page }) => {
+    const setHidden = (hidden: boolean) =>
+      page.evaluate((value) => {
+        Object.defineProperty(document, "hidden", { configurable: true, get: () => value });
+        document.dispatchEvent(new Event("visibilitychange"));
+      }, hidden);
     await page.goto("/");
     await expect(bg(page)).toHaveAttribute("data-state", "running");
-    await page.evaluate(() => {
-      Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
-      document.dispatchEvent(new Event("visibilitychange"));
-    });
+    await setHidden(true);
     await expect(bg(page)).toHaveAttribute("data-state", "paused");
+    await setHidden(false);
+    await expect(bg(page)).toHaveAttribute("data-state", "running");
   });
 });
 
@@ -79,8 +84,7 @@ test.describe("hero background fallback", () => {
 
 test.describe("hero intro", () => {
   const intro = (page: Page) => page.locator("section[aria-labelledby='name'] p[data-state]");
-  const sentence =
-    "AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.";
+  const sentence = content.profile.intro;
 
   test("reveals the text from dots, then leaves plain text", async ({ page }) => {
     await page.goto("/");
