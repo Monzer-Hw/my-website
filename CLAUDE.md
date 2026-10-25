@@ -40,8 +40,9 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
 - `components/sections/`: home sections in spec order (`Hero`,
   `Projects`/`ProjectRow`, `About`, `Experience`, `Stack`, `Contact`,
   `SectionHeading`)
-- `components/hero/`: `HalftoneRing` (canvas), `Photo` (placeholder card
-  until `profile.photo` is set)
+- `components/hero/`: `HeroSphere` (WebGL dot sphere), `HalftoneRing`
+  (2D canvas, fallback without WebGL), `IntroReveal` (intro from dot
+  blocks on load), `Photo` (placeholder card until `profile.photo` is set)
 - `components/media/`: `ProjectVideo` (still + "Watch demo", opens the
   player), `VideoDialog` (native `<dialog>`; the `<video>` exists only
   while open, so nothing loads before play), `VideoPoster`, `PosterArt`

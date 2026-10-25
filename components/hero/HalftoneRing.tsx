@@ -156,6 +156,7 @@ export function HalftoneRing() {
   return (
     <canvas
       ref={ref}
+      data-hero-bg="ring"
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 size-full [mask-image:linear-gradient(180deg,#000_64%,transparent_92%)]"
     />

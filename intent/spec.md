@@ -113,7 +113,7 @@ section.
   light grey, soft shadow, "MH" initials.
 - The real photo replaces the card and has **no card**: no background,
   corners or shadow. It is shown in grayscale. A photo with the
-  background removed works best on the halftone ring.
+  background removed works best on the dot sphere.
 - A real photo is required before the public launch.
 
 ### 3.9 Non-functional requirements
@@ -191,7 +191,7 @@ tools, not part of the site.
 ### 4.1 Principles
 - Calm, editorial, monochrome. Typography and spacing carry the
   design; color is almost absent.
-- One signature visual: the halftone ring in the hero.
+- One signature visual: the dot sphere in the hero.
 - Every section uses the same label-left, content-right grid.
 - Content shows engineering thinking: decisions and measured results.
 
@@ -252,16 +252,22 @@ Light theme only in v1.
   LinkedIn icons centered below the form with "Or find me on".
 
 ### 4.7 Motion
-- **Halftone ring**: one large ring of dots behind the whole hero,
-  centered behind the name on desktop and behind the name and intro on
-  phones. It **loops continuously**: slow and subtle, never competing
-  with the text. Its exact motion (rotation, breathing or a wave
-  through the dots) is chosen during the build from two or three
-  quick prototypes.
+- **Dot sphere** (revised by the owner after phase 9; replaces the
+  halftone ring): a slowly turning sphere of fine dots that folds into
+  ribbons, behind the whole hero, right of the name on desktop and
+  behind the name and intro on phones. It **loops continuously**: slow
+  and subtle, never competing with the text; dots behind the text column
+  are fainter. Where WebGL is missing or runs without a GPU, the
+  halftone ring (sweep) shows instead.
   - It stays still when the visitor's system asks for reduced motion.
   - It pauses when the hero is off screen or the tab is hidden.
   - It must not drop the page below 60 frames per second on a
     mid-range phone.
+- **Intro reveal**: on load, each letter of the intro first appears as
+  a flickering block of dots, then the letters resolve into text one by
+  one in random order (about two seconds). Screen readers get the whole
+  sentence at once; the text is plain text before and after; skipped for
+  reduced motion.
 - Elsewhere: hover fades of 0.2s, buttons press in slightly, the
   header gets a divider line after scrolling. Nothing else moves.
 
@@ -366,6 +372,8 @@ v1 is done when:
 | No "Now building" card | Card on the photo |
 | Photo without a card; card only as a placeholder | Photo always in a card |
 | Ring behind the whole hero, looping | Ring that draws in once |
+| Dot sphere behind the hero, ring as fallback (after phase 9) | Halftone ring |
+| Intro revealed from dot blocks on load (after phase 9) | Static intro |
 | Project media in the left column | Large video above each description |
 | GitHub and LinkedIn in the header and under the form | List in the footer |
 | One-line footer | Footer with name block and social list |
