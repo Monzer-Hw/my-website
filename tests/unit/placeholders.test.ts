@@ -18,19 +18,26 @@ function withoutPlaceholders(c: Content): Content {
 
 describe("findPlaceholders", () => {
   it("lists every placeholder entry in readable form", () => {
-    const found = findPlaceholders(content);
-    expect(found).toHaveLength(16);
-    expect(found).toEqual(
-      expect.arrayContaining([
-        "profile",
-        "status",
-        "legal: Impressum",
-        "legal: Datenschutzerklärung",
-        "projects: Sudoku solver",
-        "experience: AI Engineer at Nordwerk Analytics GmbH",
-        "stack: Computer vision",
-      ]),
-    );
+    const c = withoutPlaceholders(content);
+    const flag = <T extends { placeholder?: boolean }>(entry: T): T => ({ ...entry, placeholder: true });
+    const flagged: Content = {
+      ...c,
+      profile: flag(c.profile),
+      status: flag(c.status),
+      projects: [flag(c.projects[0]), ...c.projects.slice(1)],
+      experience: [flag(c.experience[0]), ...c.experience.slice(1)],
+      stack: [flag(c.stack[0]), ...c.stack.slice(1)],
+      legal: { impressum: flag(c.legal.impressum), datenschutz: flag(c.legal.datenschutz) },
+    };
+    expect(findPlaceholders(flagged)).toEqual([
+      "profile",
+      "status",
+      `projects: ${c.projects[0].title}`,
+      `experience: ${c.experience[0].role} at ${c.experience[0].org}`,
+      `stack: ${c.stack[0].title}`,
+      `legal: ${c.legal.impressum.title}`,
+      `legal: ${c.legal.datenschutz.title}`,
+    ]);
   });
 
   it("returns nothing once all content is real", () => {
