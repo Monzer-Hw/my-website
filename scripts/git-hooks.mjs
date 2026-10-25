@@ -28,7 +28,8 @@ export const MAX_FIRST_LINE = 72;
 const RULES = ".claude/rules/git-conventions.md";
 
 // Messages git writes itself (merges, reverts, autosquash commits).
-const GIT_MESSAGE = /^(Merge |Revert "|fixup! |squash! |amend! )/;
+const GIT_MESSAGE =
+  /^(Merge (branch|branches|remote-tracking branch|pull request|tag|commit) |Revert "|Reapply "|fixup! |squash! |amend! )/;
 
 // `git commit -v` appends the diff below this line; git drops it.
 const SCISSORS = "# ------------------------ >8 ------------------------";
@@ -43,7 +44,8 @@ const HEADER = /^(?<type>[A-Za-z]+)(?:\((?<scope>[^()\s]+)\))?!?: (?<summary>\S.
  */
 export function checkCommitMessage(text) {
   const lines = [];
-  for (const line of text.split(/\r?\n/)) {
+  // Some editors save a byte order mark first; it would hide the real first character.
+  for (const line of text.replace(/^﻿/, "").split(/\r?\n/)) {
     if (line === SCISSORS) break;
     if (line.startsWith("#")) continue;
     lines.push(line.trimEnd());
@@ -141,7 +143,11 @@ export function run(args, io = {}) {
   let heading;
   if (command === "commit-msg" && file) {
     heading = `Commit message refused (rules: ${RULES}):`;
-    problems = checkCommitMessage(readFile(file));
+    // Branch too: pre-commit does not run for an empty or merge commit.
+    problems = [
+      ...checkBranch(readGit(["branch", "--show-current"]).trim()),
+      ...checkCommitMessage(readFile(file)),
+    ];
   } else if (command === "pre-commit") {
     heading = "Commit refused:";
     const branch = readGit(["branch", "--show-current"]).trim();

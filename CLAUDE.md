@@ -37,7 +37,9 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
 in `scripts/git-hooks.mjs`.
 - Commit: refused on `main`, with a staged `.env*` file other than
   `.env.example`, or when ESLint fails on the staged files.
-- Commit message: must follow `.claude/rules/git-conventions.md`.
+- Commit message: must follow `.claude/rules/git-conventions.md`; also
+  refused on `main` (covers empty and merge commits, where pre-commit
+  does not run).
 - Push: `npm run typecheck` and `npm run test:coverage`.
 - `npm run verify` is the full local check; run it before opening a PR.
 - Skipping hooks (`--no-verify`, `LEFTHOOK=0`) needs the owner's approval.

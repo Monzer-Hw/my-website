@@ -178,11 +178,11 @@ New project at the repo root; `intent/` stays as is.
 | `lib/email.ts` | Resend HTTP API via `fetch` (no SDK), plain text, reply-to = visitor |
 | `lib/placeholders.ts` | Lists placeholders; fails the build when `VERCEL_ENV=production` and any remain (replaces the planned `scripts/check-placeholders.ts`) |
 | `public/cv/Monzer-Hweit-CV.pdf`, `public/photo/`, `public/videos/` | Assets (placeholders until real) |
-| `tests/unit/*.test.ts` | Vitest: schemas, contact validation, spam checks, placeholder check |
+| `tests/unit/*.test.ts` | Vitest: schemas, contact validation, spam checks, placeholder check, git hook checks, robots/sitemap |
 | `tests/e2e/*.spec.ts` | Playwright: sections, navigation, mobile menu, form, video click-to-load, axe |
 | `lighthouserc.json` | Lighthouse CI thresholds (performance ≥95, accessibility 100, mobile) |
-| `.github/workflows/ci.yml` | Typecheck, lint, unit, build, e2e with axe, Lighthouse on every PR |
-| `lefthook.yml`, `scripts/git-hooks.mjs` | Local git hooks (lefthook, installed by `npm install`): branch, env file, ESLint and commit message checks on commit; typecheck and unit coverage on push |
+| `.github/workflows/ci.yml` | Typecheck, lint, unit tests with coverage, build, e2e with axe, Lighthouse on every PR |
+| `lefthook.yml`, `scripts/git-hooks.mjs` | Local git hooks (lefthook, installed by `npm install`): branch, env file, ESLint and commit message checks on commit (the message hook also refuses `main`, for empty and merge commits); typecheck and unit coverage on push |
 | `.env.example` | `RESEND_API_KEY`, `CONTACT_TO`, `CONTACT_FROM` (no secrets committed) |
 
 ## 3. Order of work

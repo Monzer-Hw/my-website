@@ -21,6 +21,10 @@ describe("checkCommitMessage", () => {
 
   it.each([
     "Merge branch 'main' into feat/contact-form",
+    "Merge branch 'x' into y",
+    "Merge pull request #1 from a/b",
+    "Merge remote-tracking branch 'origin/main'",
+    'Reapply "feat: x"',
     'Revert "feat(contact): add the form"\n\nThis reverts commit 0c74d68.',
     "fixup! feat(contact): add the form",
     "squash! feat(contact): add the form",
@@ -39,6 +43,16 @@ describe("checkCommitMessage", () => {
       "Bad first line. That would fail.",
     ].join("\n");
     expect(checkCommitMessage(message)).toEqual([]);
+  });
+
+  it("refuses a message that only starts like a merge", () => {
+    const problems = checkCommitMessage("Merge the new layout.");
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toMatch(/^The first line must be "<type>\(<scope>\): <summary>"/);
+  });
+
+  it("ignores a leading byte order mark", () => {
+    expect(checkCommitMessage("﻿feat(contact): add the form\n")).toEqual([]);
   });
 
   it("accepts Windows line endings", () => {
@@ -136,24 +150,53 @@ describe("checkStagedFiles", () => {
 });
 
 describe("run", () => {
-  function setup(git: Record<string, string>, files: Record<string, string> = {}) {
+  const BRANCH_ARGS = ["branch", "--show-current"];
+  const STAGED_ARGS = ["diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z"];
+
+  function setup(
+    git: { branch?: string; staged?: string },
+    files: Record<string, string> = {},
+  ) {
     const lines: string[] = [];
+    const calls: string[][] = [];
     const io = {
-      readGit: (args: string[]) => git[args[0]] ?? "",
+      readGit: (args: string[]) => {
+        calls.push(args);
+        if (JSON.stringify(args) === JSON.stringify(BRANCH_ARGS)) return git.branch ?? "";
+        if (JSON.stringify(args) === JSON.stringify(STAGED_ARGS)) return git.staged ?? "";
+        throw new Error(`unexpected git call: ${args.join(" ")}`);
+      },
       readFile: (path: string) => files[path] ?? "",
       log: (line: string) => lines.push(line),
     };
-    return { io, lines };
+    return { io, lines, calls };
   }
 
-  it("commit-msg exits 0 for a valid message", () => {
-    const { io, lines } = setup({}, { MSG: "feat(hooks): add lefthook\n" });
+  it("commit-msg exits 0 for a valid message on a topic branch", () => {
+    const { io, lines, calls } = setup(
+      { branch: "test/local-checks\n" },
+      { MSG: "feat(hooks): add lefthook\n" },
+    );
     expect(run(["commit-msg", "MSG"], io)).toBe(0);
+    expect(calls).toEqual([BRANCH_ARGS]);
     expect(lines).toEqual([]);
   });
 
+  it("commit-msg reports a commit on main even with a valid message", () => {
+    const { io, lines } = setup({ branch: "main\n" }, { MSG: "feat(hooks): add lefthook\n" });
+    expect(run(["commit-msg", "MSG"], io)).toBe(1);
+    expect(lines).toHaveLength(2);
+    expect(lines[0]).toBe("Commit message refused (rules: .claude/rules/git-conventions.md):");
+    expect(lines[1]).toContain("Commits on main are not allowed");
+  });
+
+  it("commit-msg accepts a message with a byte order mark", () => {
+    const { io } = setup({ branch: "feat/x\n" }, { MSG: "﻿feat(hooks): add lefthook\n" });
+    expect(run(["commit-msg", "MSG"], io)).toBe(0);
+  });
+
   it("commit-msg exits 1 and prints each problem", () => {
-    const { io, lines } = setup({}, { MSG: "feat(hooks): Add lefthook.\n" });
+    const { io, lines } = setup({ branch: "feat/x\n" }, { MSG: "feat(hooks): Add lefthook.\n" });
     expect(run(["commit-msg", "MSG"], io)).toBe(1);
     expect(lines[0]).toBe("Commit message refused (rules: .claude/rules/git-conventions.md):");
     expect(lines.slice(1)).toEqual([
@@ -165,7 +208,7 @@ describe("run", () => {
   it("pre-commit reads the branch and staged files from git", () => {
     const { io, lines } = setup({
       branch: "main\n",
-      diff: "README.md\0.env.local\0",
+      staged: "README.md\0.env.local\0",
     });
     expect(run(["pre-commit"], io)).toBe(1);
     expect(lines).toHaveLength(3);
@@ -175,7 +218,7 @@ describe("run", () => {
   });
 
   it("pre-commit exits 0 on a topic branch with clean staged files", () => {
-    const { io, lines } = setup({ branch: "test/local-checks\n", diff: "README.md\0" });
+    const { io, lines } = setup({ branch: "test/local-checks\n", staged: "README.md\0" });
     expect(run(["pre-commit"], io)).toBe(0);
     expect(lines).toEqual([]);
   });
