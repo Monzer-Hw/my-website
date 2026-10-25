@@ -3,6 +3,8 @@ paths:
   - "app/**"
   - "components/**"
   - "lib/**"
+  - "content/**"
+  - ".env.example"
   - "next.config.ts"
   - "vercel.json"
   - "package.json"

@@ -13,7 +13,9 @@ when Claude works on matching files:
 - `design.md`: theme, tokens, spec section 4 pointers (UI files)
 - `content.md`: where text lives, placeholders (content and UI files)
 - `nextjs.md`: Next.js 16 gotchas (`app/`, `components/`, `lib/`)
-- `privacy.md`: privacy and legal, spec 3.9 and 3.10 (app code, config)
+- `privacy.md`: privacy and legal, spec 3.9 and 3.10 (app code,
+  content, config)
+Before creating a file in a scoped folder, read its rules file first.
 
 @AGENTS.md
 

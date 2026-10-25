@@ -18,6 +18,7 @@ performance targets are in 3.9.
 ## Tokens (use these, never raw values)
 Colors `bg surface ink ink-2 ink-3 ink-4 line line-2 signal live danger`
 (e.g. `text-ink-3`, `bg-surface`), plus `poster poster-2 poster-line
-poster-ink poster-text` for the dark video stills only; radii `rounded-tag|ctl|media|card|photo`;
-breakpoints `phone:` (560px) and `desk:` (900px); `wrap` utility for the
-page column; spacing `h-header`, `py-section`, `px-gutter`.
+poster-ink poster-text` for the dark video stills only; radii
+`rounded-tag|ctl|media|card|photo`; breakpoints `phone:` (560px) and
+`desk:` (900px); `wrap` utility for the page column; spacing
+`h-header`, `py-section`, `px-gutter`.
