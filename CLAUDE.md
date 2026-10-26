@@ -7,7 +7,15 @@ before changing anything:
 - `intent/plan.md`: build phases, files, risks, proof (accepted)
 - `intent/design-reference.html`: the agreed design, placeholder content
 
-Version control rules live in `.claude/rules/git-conventions.md`.
+Topic rules live in `.claude/rules/`. Files with `paths:` load only
+when Claude works on matching files:
+- `git-conventions.md`: branches, commits, PRs, git hooks (always)
+- `design.md`: theme, tokens, spec section 4 pointers (UI files)
+- `content.md`: where text lives, placeholders (content and UI files)
+- `nextjs.md`: Next.js 16 gotchas (`app/`, `components/`, `lib/`)
+- `privacy.md`: privacy and legal, spec 3.9 and 3.10 (app code,
+  content, config)
+Before creating a file in a scoped folder, read its rules file first.
 
 @AGENTS.md
 
@@ -32,18 +40,6 @@ First run of e2e tests needs a browser: `npx playwright install chromium`.
 CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
 (`lighthouserc.json`: performance ≥ 0.95, accessibility 1.0, mobile).
 
-## Git hooks
-`lefthook.yml`, installed by `npm install`/`npm ci` (not in CI); checks
-in `scripts/git-hooks.mjs`.
-- Commit: refused on `main`, with a staged `.env*` file other than
-  `.env.example`, or when ESLint fails on the staged files.
-- Commit message: must follow `.claude/rules/git-conventions.md`; also
-  refused on `main` (covers empty and merge commits, where pre-commit
-  does not run).
-- Push: `npm run typecheck` and `npm run test:coverage`.
-- `npm run verify` is the full local check; run it before opening a PR.
-- Skipping hooks (`--no-verify`, `LEFTHOOK=0`) needs the owner's approval.
-
 ## Layout
 - `app/`: routes, root layout (font, skip link, header, footer),
   `globals.css` with the Tailwind `@theme` tokens
@@ -64,11 +60,9 @@ in `scripts/git-hooks.mjs`.
 - `components/contact/`: `ContactForm` (validation, sending, success and
   error states, honeypot), `CopyButton`
 - `app/api/contact/route.ts`: the only server code; validates, drops spam,
-  emails through Resend. Stores nothing; never logs personal data
-- `vercel.json`: functions run in Frankfurt (`fra1`). The contact rate
-  limit (5 POSTs per IP per 10 min, then 429) is a Vercel Firewall rule
-  on the project, not in the repo
-- `content/`: all site text and data (see Content below)
+  emails through Resend
+- `vercel.json`: functions run in Frankfurt (`fra1`)
+- `content/`: all site text and data (rules in `.claude/rules/content.md`)
 - `lib/cn.ts`: class names; `lib/placeholders.ts`: launch guard;
   `lib/dates.ts`: `YYYY-MM` formatting; `lib/contact.ts`: form rules and
   spam checks shared by form and server; `lib/email.ts`: Resend HTTP API
@@ -77,40 +71,8 @@ in `scripts/git-hooks.mjs`.
   phases (see plan section 2)
 - `tests/unit/`: Vitest; `tests/e2e/`: Playwright
 
-## Tokens (use these, never raw values)
-Colors `bg surface ink ink-2 ink-3 ink-4 line line-2 signal live danger`
-(e.g. `text-ink-3`, `bg-surface`), plus `poster poster-2 poster-line
-poster-ink poster-text` for the dark video stills only; radii `rounded-tag|ctl|media|card|photo`;
-breakpoints `phone:` (560px) and `desk:` (900px); `wrap` utility for the
-page column; spacing `h-header`, `py-section`, `px-gutter`.
-
-## Content
-- Files: `site.ts` (name, nav, links), `sections.ts` (headings,
-  ledes, button and form labels), `profile.ts`, `status.ts`,
-  `projects.ts`, `experience.ts`, `stack.ts`; rules in `schema.ts`
-  (Zod, limits from spec 3.2–3.8).
-- Components import `content` from `@/content` (validated at build).
-  Invalid content fails `next build` with the field path.
-- Entries marked `placeholder: true` are stand-ins. With
-  `VERCEL_ENV=production` the build fails while any remain (spec 3.7);
-  previews and local builds pass. Remove the flag only with real content.
-
-## Next.js 16 gotchas
-- `cacheComponents` is on: `new Date()`, `Math.random()` and similar
-  fail the prerender. Put them in a `"use cache"` function with an
-  explicit `cacheLife(...)`, or in a Client Component.
-
 ## Rules
 - Follow the spec. If the build must deviate, update `intent/plan.md`
   (or the spec) in the same commit.
-- When descriptive docs (this file, `AGENTS.md`, code comments) and the
-  existing code disagree, follow the conventions in the existing code,
-  and in your final reply point out each inconsistency you found
-  between the docs and the code. The intent files (`intent/*.md`) are
-  still the source of truth for what to build.
-- All site text and data live in `content/`, never hard-coded in
-  components.
-- No cookies, trackers or third-party requests on page load (spec 3.9).
+- When a repository's documentation and its existing code disagree, follow the conventions used in the existing code, and in your final reply point out each incosistency you found between the documentation and the code.
 - Never commit secrets; `.env.example` lists the variable names.
-- Light theme only; colors, type and spacing come from the tokens in
-  `app/globals.css`.
