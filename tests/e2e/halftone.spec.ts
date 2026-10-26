@@ -107,7 +107,7 @@ test.describe("hero intro", () => {
     const bold = await intro(page)
       .locator("[data-c]")
       .evaluateAll((els) => els.filter((e) => getComputedStyle(e).fontWeight === "600").map((e) => e.textContent).join(""));
-    expect(bold).toBe(content.site.name);
+    expect(bold).toBe(content.site.name.split(" ")[0]);
   });
 
   test("is skipped for reduced motion", async ({ page }) => {
