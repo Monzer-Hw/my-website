@@ -74,10 +74,5 @@ CI (`.github/workflows/ci.yml`) runs all of the above plus Lighthouse
 ## Rules
 - Follow the spec. If the build must deviate, update `intent/plan.md`
   (or the spec) in the same commit.
-- When descriptive docs (this file, `AGENTS.md`, `.claude/rules/`,
-  code comments) and the existing code disagree, follow the
-  conventions in the existing code, and in your final reply point out
-  each inconsistency you found between the docs and the code. The
-  intent files (`intent/*.md`) are still the source of truth for what
-  to build.
+- When a repository's documentation and its existing code disagree, follow the conventions used in the existing code, and in your final reply point out each incosistency you found between the documentation and the code.
 - Never commit secrets; `.env.example` lists the variable names.
