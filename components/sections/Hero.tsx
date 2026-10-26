@@ -22,7 +22,6 @@ export function Hero() {
             id="name"
             text={profile.intro}
             strong={site.name.split(" ")[0]}
-            small={profile.intro.split("\n\n")[1]}
             className="max-w-[34ch] text-[clamp(1.25rem,1.05rem+0.7vw,1.625rem)] leading-[1.35] font-normal tracking-[-0.015em] text-pretty text-ink-2"
           />
           <div className="mt-8 flex flex-wrap gap-2.5">
@@ -34,7 +33,21 @@ export function Hero() {
           </div>
         </div>
 
-        <Photo />
+        <Photo className="order-3 desk:order-none" />
+
+        {/* Small focus keywords, where the facts row used to be: under the buttons, full width. */}
+        <ul className="order-2 flex list-none flex-wrap gap-x-2 gap-y-1 text-sm leading-[1.4] text-ink-3 desk:order-none desk:col-span-2">
+          {profile.keywords.map((keyword, i) => (
+            <li key={keyword} className="whitespace-nowrap">
+              {keyword}
+              {i < profile.keywords.length - 1 && (
+                <span aria-hidden="true" className="ml-2">
+                  ·
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

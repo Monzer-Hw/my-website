@@ -44,12 +44,12 @@ added under `/de/...` so no existing link breaks.
    carries the name). Below 900px: menu
    button instead of section links; GitHub and LinkedIn move into the
    menu below 560px.
-2. **Hero**: a three-part intro ("Hi, I’m Monzer, an AI Engineer.", a
-   line on what I build, and a line of focus areas separated by " · ";
-   it is the page heading, at intro size, at most 220 characters, with
-   the first name in bold ink), buttons
+2. **Hero**: a two-line intro ("Hi, I’m Monzer, an AI Engineer." and a
+   line on what I build; it is the page heading, at intro size, at most
+   140 characters, with the first name in bold ink), buttons
    "See my work" (to Projects)
-   and "Get in touch" (to Contact), and photo.
+   and "Get in touch" (to Contact), photo, and a row of small focus
+   keywords (separated by "·") under the buttons.
 3. **Projects**: one row per project (see 3.3).
 4. **About**: one statement and at most two short paragraphs.
 5. **Experience**: roles, newest first; each with dates, location,
@@ -245,8 +245,9 @@ Light theme only in v1.
 - **Tags** ("exploring", "in progress"): 4px corners, thin border.
 
 ### 4.6 Section details
-- **Hero**: intro sentence and buttons left, photo right. On phones:
-  text, then photo.
+- **Hero**: intro sentence and buttons left, photo right, the small
+  keyword row full width below them (where the facts row used to be, no
+  divider line). On phones: text, keywords, then photo.
 - **Projects**: title, status, video still and links in the left
   column, which stays in view while scrolling; description, decisions
   and tools on the right. Video stills are 16:9, with the duration
@@ -379,7 +380,7 @@ v1 is done when:
 | Dot sphere behind the hero, ring as fallback (after phase 9) | Halftone ring |
 | Intro revealed from dot blocks on load (after phase 9) | Static intro |
 | Intro sentence with the name as the page heading, no big name (after phase 9) | Large two-line name above the intro |
-| No facts row in the hero (after phase 9) | Location, focus and status row under the hero |
+| Small keyword row under the hero buttons, no divider (after phase 9) | Location, focus and status row under the hero |
 | No name or "MH" mark in the header (after phase 9) | Name with mark linking home |
 | Project media in the left column | Large video above each description |
 | GitHub and LinkedIn in the header and under the form | List in the footer |

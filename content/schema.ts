@@ -27,7 +27,9 @@ export const siteSchema = z.object({
 
 export const profileSchema = z.object({
   placeholder,
-  intro: text.max(220),
+  intro: text.max(140),
+  /** Focus areas, shown as a small row under the hero buttons. */
+  keywords: z.array(text).min(1),
   location: z.object({ city: text, country: text }),
   statement: text,
   bio: z.array(text).min(1).max(2),

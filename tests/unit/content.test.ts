@@ -51,9 +51,9 @@ describe("content schema", () => {
     expect(issues(c)).toEqual([expect.stringMatching(/^profile\.bio:/)]);
   });
 
-  it("rejects an intro longer than 220 characters", () => {
+  it("rejects an intro longer than 140 characters", () => {
     const c = raw();
-    c.profile.intro = `I’m ${c.site.name}, ${"x".repeat(220)}`;
+    c.profile.intro = `I’m ${c.site.name}, ${"x".repeat(140)}`;
     expect(issues(c)).toEqual([expect.stringMatching(/^profile\.intro:/)]);
   });
 

@@ -4,8 +4,8 @@ import type { Profile } from "./schema";
 export const profile: Profile = {
   placeholder: true,
   intro:
-    // Non-breaking spaces keep each multi-word term, and the "·" after it, on one line when the keyword line wraps.
-    "Hi, I’m Monzer, an AI Engineer.\nI build LLM-powered solutions and the systems that make them work reliably in production.\n\nAgent Engineering · Harness Design · RAG · Evals · Context Management · Loop Engineering",
+    "Hi, I’m Monzer, an AI Engineer.\nI build LLM-powered solutions and the systems that make them work reliably in production.",
+  keywords: ["Agent Engineering", "Harness Design", "RAG", "Evals", "Context Management", "Loop Engineering"],
   location: { city: "Düsseldorf area", country: "Germany" },
   statement:
     "I build AI systems that companies can actually run: retrieval over messy documents, LLM services with clear contracts, and automations that save people real hours.",
