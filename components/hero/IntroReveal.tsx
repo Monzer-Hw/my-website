@@ -44,7 +44,8 @@ export function IntroReveal({
   const root = useRef<HTMLParagraphElement>(null); // same shape as HTMLHeadingElement
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<"idle" | "animating" | "done" | "static">("idle");
-  const words = text.split(" ");
+  // A newline in `text` is a line break; it is split like a space so the offsets below still hold.
+  const words = text.split(/[ \n]/);
   // Character offsets of each word in `text`, and the range to show in bold.
   const wordStart: number[] = [];
   for (let i = 0, pos = 0; i < words.length; i++) {
@@ -273,6 +274,7 @@ export function IntroReveal({
                 {" "}
               </span>
             )}
+            {text[wordStart[wi] + word.length] === "\n" && <br />}
           </Fragment>
         ))}
       </span>

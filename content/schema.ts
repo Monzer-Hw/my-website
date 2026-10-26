@@ -27,7 +27,7 @@ export const siteSchema = z.object({
 
 export const profileSchema = z.object({
   placeholder,
-  intro: text.max(140),
+  intro: text.max(220),
   location: z.object({ city: text, country: text }),
   statement: text,
   bio: z.array(text).min(1).max(2),
@@ -153,9 +153,10 @@ export const contentSchema = z
     stack: z.array(stackGroupSchema).min(1),
   })
   .superRefine((content, ctx) => {
-    // The intro is the page heading, so it has to carry the name.
-    if (!content.profile.intro.includes(content.site.name)) {
-      ctx.addIssue({ code: "custom", message: `Intro must contain the name "${content.site.name}"`, path: ["profile", "intro"] });
+    // The intro is the page heading, so it has to carry the (first) name.
+    const firstName = content.site.name.split(" ")[0];
+    if (!content.profile.intro.includes(firstName)) {
+      ctx.addIssue({ code: "custom", message: `Intro must contain the name "${firstName}"`, path: ["profile", "intro"] });
     }
     const ids = new Set<string>();
     content.projects.forEach((p, i) => {

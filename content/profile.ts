@@ -4,7 +4,7 @@ import type { Profile } from "./schema";
 export const profile: Profile = {
   placeholder: true,
   intro:
-    "I’m Monzer Hweit, an AI engineer building retrieval systems, LLM pipelines and automations that keep working after the demo.",
+    "Hi, I’m Monzer, an AI Engineer.\nI build the systems around LLMs: harnesses, retrieval pipelines, and tool integrations. Provider-agnostic, testable, and ready for production.",
   location: { city: "Düsseldorf area", country: "Germany" },
   statement:
     "I build AI systems that companies can actually run: retrieval over messy documents, LLM services with clear contracts, and automations that save people real hours.",

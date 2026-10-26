@@ -51,16 +51,16 @@ describe("content schema", () => {
     expect(issues(c)).toEqual([expect.stringMatching(/^profile\.bio:/)]);
   });
 
-  it("rejects an intro longer than 140 characters", () => {
+  it("rejects an intro longer than 220 characters", () => {
     const c = raw();
-    c.profile.intro = `I’m ${c.site.name}, ${"x".repeat(140)}`;
+    c.profile.intro = `I’m ${c.site.name}, ${"x".repeat(220)}`;
     expect(issues(c)).toEqual([expect.stringMatching(/^profile\.intro:/)]);
   });
 
   it("rejects an intro without the name (it is the page heading)", () => {
     const c = raw();
     c.profile.intro = "An AI engineer building retrieval systems.";
-    expect(issues(c)).toEqual([`profile.intro: Intro must contain the name "${c.site.name}"`]);
+    expect(issues(c)).toEqual([`profile.intro: Intro must contain the name "${c.site.name.split(" ")[0]}"`]);
   });
 
   it("requires captions for every demo video", () => {

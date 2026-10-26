@@ -44,9 +44,9 @@ added under `/de/...` so no existing link breaks.
    carries the name). Below 900px: menu
    button instead of section links; GitHub and LinkedIn move into the
    menu below 560px.
-2. **Hero**: one intro sentence that starts with the name ("I’m Monzer
-   Hweit, an AI engineer building…"; it is the page heading, at intro
-   size, at most 140 characters, with the name in bold ink), buttons
+2. **Hero**: a two-line intro ("Hi, I’m Monzer, an AI Engineer." then
+   a line on what I build; it is the page heading, at intro size, at
+   most 220 characters, with the first name in bold ink), buttons
    "See my work" (to Projects)
    and "Get in touch" (to Contact), and photo.
 3. **Projects**: one row per project (see 3.3).
