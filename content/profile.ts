@@ -13,4 +13,5 @@ export const profile: Profile = {
     "Today I work as an AI engineer on document intelligence and internal assistants. I write the spec before the code, keep services typed and tested, and design provider-agnostic interfaces so a new model is a config change, not a rewrite.",
   ],
   email: "hello@example.com",
+  photo: { src: "/photo/monzer.png", alt: "Portrait of Monzer Hweit", width: 1122, height: 1402 },
 };
