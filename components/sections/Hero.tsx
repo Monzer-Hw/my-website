@@ -22,6 +22,7 @@ export function Hero() {
             id="name"
             text={profile.intro}
             strong={site.name.split(" ")[0]}
+            small={profile.intro.split("\n\n")[1]}
             className="max-w-[34ch] text-[clamp(1.25rem,1.05rem+0.7vw,1.625rem)] leading-[1.35] font-normal tracking-[-0.015em] text-pretty text-ink-2"
           />
           <div className="mt-8 flex flex-wrap gap-2.5">

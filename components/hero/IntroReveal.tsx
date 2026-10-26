@@ -32,6 +32,7 @@ export function IntroReveal({
   as: Tag = "p",
   id,
   strong,
+  small,
   className,
 }: {
   text: string;
@@ -39,6 +40,8 @@ export function IntroReveal({
   id?: string;
   /** A phrase within `text` shown in bold ink (the name). */
   strong?: string;
+  /** A phrase within `text` shown a bit smaller (the keyword line). */
+  small?: string;
   className?: string;
 }) {
   const root = useRef<HTMLParagraphElement>(null); // same shape as HTMLHeadingElement
@@ -54,7 +57,9 @@ export function IntroReveal({
   }
   const from = strong ? text.indexOf(strong) : -1;
   const isStrong = (at: number) => from >= 0 && at >= from && at < from + strong!.length;
-  const strongClass = (at: number) => (isStrong(at) ? "font-semibold text-ink" : undefined);
+  const smallFrom = small ? text.indexOf(small) : -1;
+  const isSmall = (at: number) => smallFrom >= 0 && at >= smallFrom && at < smallFrom + small!.length;
+  const charClass = (at: number) => cn(isStrong(at) && "font-semibold text-ink", isSmall(at) && "text-[0.88em]");
 
   // Decide whether to animate once fonts are ready (glyph shapes depend on the real font).
   useEffect(() => {
@@ -98,6 +103,8 @@ export function IntroReveal({
     const asc = mh.fontBoundingBoxAscent || fs * 0.95;
     const cap = mh.actualBoundingBoxAscent || fs * 0.7;
     const xh = measure.measureText("x").actualBoundingBoxAscent || cap * 0.72;
+    // Smaller letters (the keyword line) scale the font metrics above.
+    const scale = chars.map((c) => parseFloat(getComputedStyle(c).fontSize) / fs);
     const pitch = fs / SPACING;
     const rad = (pitch * DOT_SIZE) / 2;
 
@@ -110,9 +117,10 @@ export function IntroReveal({
     o.fillStyle = "#000";
     chars.forEach((c, i) => {
       if (c.dataset.sp) return;
-      // Per character, so bold letters (the name) are sampled in bold.
-      o.font = `${getComputedStyle(c).fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-      o.fillText(c.textContent ?? "", boxes[i].x, boxes[i].y + asc);
+      // Per character, so bold letters (the name) and smaller ones are sampled as they are drawn.
+      const cc = getComputedStyle(c);
+      o.font = `${cc.fontWeight} ${cc.fontSize} ${cs.fontFamily}`;
+      o.fillText(c.textContent ?? "", boxes[i].x, boxes[i].y + asc * scale[i]);
     });
     const img = o.getImageData(0, 0, W, H).data;
     const glyphAt = (x: number, y: number) =>
@@ -121,16 +129,18 @@ export function IntroReveal({
     // Each character gets a random shape; dots sit on one shared grid so neighbouring blocks touch.
     const dots: Dot[][] = boxes.map((b, i) => {
       const out: Dot[] = [];
-      const base = b.y + asc;
+      const base = b.y + asc * scale[i];
+      const capH = cap * scale[i];
+      const xhH = xh * scale[i];
       const isSp = !!chars[i].dataset.sp;
       if (isSp && !(boxes[i - 1] && boxes[i + 1] && boxes[i - 1].y === b.y && boxes[i + 1].y === b.y)) return out;
       const sh = MIX[Math.floor(Math.random() * MIX.length)];
       if (sh === "glyph" && isSp) return out;
-      let top = base - cap;
+      let top = base - capH;
       let bottom = base;
-      if (sh === "xheight") top = base - xh;
+      if (sh === "xheight") top = base - xhH;
       else if (sh === "baseline") top = base - pitch * 2;
-      else if (sh === "heights") top = base - cap * (0.3 + Math.random() * 0.95);
+      else if (sh === "heights") top = base - capH * (0.3 + Math.random() * 0.95);
       else if (sh === "glyph") {
         top = b.y + 1;
         bottom = b.y + b.h - 1;
@@ -264,13 +274,13 @@ export function IntroReveal({
           <Fragment key={wi}>
             <span className="inline-block whitespace-nowrap">
               {[...word].map((ch, ci) => (
-                <span key={ci} data-c="" className={strongClass(wordStart[wi] + ci)}>
+                <span key={ci} data-c="" className={charClass(wordStart[wi] + ci)}>
                   {ch}
                 </span>
               ))}
             </span>
             {wi < words.length - 1 && (
-              <span data-c="" data-sp="1" className={strongClass(wordStart[wi] + word.length)}>
+              <span data-c="" data-sp="1" className={charClass(wordStart[wi] + word.length)}>
                 {" "}
               </span>
             )}
