@@ -60,7 +60,7 @@ describe("content schema", () => {
   it("rejects an intro without the name (it is the page heading)", () => {
     const c = raw();
     c.profile.intro = "An AI engineer building retrieval systems.";
-    expect(issues(c)).toEqual([`profile.intro: Intro must contain the name "${c.site.name}"`]);
+    expect(issues(c)).toEqual([`profile.intro: Intro must contain the name "${c.site.name.split(" ")[0]}"`]);
   });
 
   it("requires captions for every demo video", () => {
